@@ -1,7 +1,7 @@
 const express = require("express");
 const app = express();
-const customerRoute = require("./routes/customer");
-const vendorRoute = require("./routes/vendor");
+const customerRoute = require("./customer");
+const authRoute = require("./auth");
 const cors = require("cors");
 
 
