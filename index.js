@@ -1,19 +1,15 @@
-const express = require('express');
-
-const routes = require('./routes.js');
-
-// const jwt = require('jsonwebtoken');
-
+const express = require("express");
 const app = express();
-const PORT =5000;
+const customerRoute = require("./routes/customer");
+const vendorRoute = require("./routes/vendor");
+const cors = require("cors");
 
 
-app.use("/home", function (req, res, next) {
+app.use(cors());
+app.use(express.json());
+app.use("/api/customer", customerRoute);
+app.use("/api/vendor", vendorRoute);
 
-    console.log('The user is logged in! Time:', Date.now())
-    next();
+app.listen(5000, () => {
+  console.log("Server running on port 5000");
 });
-
-app.use("/home", routes);
-
-app.listen(PORT,()=>console.log("Server is running"));
