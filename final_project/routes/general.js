@@ -12,7 +12,7 @@ router.get("/",(req,res)=>{
 
 // Get the based on isbn
 router.get("/:isbn",(req,res)=>{
-    const email = req.params.isbn;
+    const isbn = req.params.isbn;
     let filtered_books = books.filter((book) => book.isbn === isbn);
     res.send(filtered_books);
 }); 
