@@ -34,7 +34,7 @@ app.post("/customer", (req,res)=> {
 
 app.use("/customer", customer_routes);
 
-app.post("/login", (req,res) => {
+app.post("/customerlogin", (req,res) => {
     const user = req.body.user;
     if (!user) {
         return res.status(404).json({message: "Body Empty"});
@@ -74,7 +74,7 @@ app.post("/customer", (req,res)=> {
 
 app.use("/vendor", vendor_routes);
 
-app.post("/login", (req,res) => {
+app.post("/vendorlogin", (req,res) => {
     const user = req.body.user;
     if (!user) {
         return res.status(404).json({message: "Body Empty"});
