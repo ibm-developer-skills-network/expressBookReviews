@@ -36,9 +36,8 @@ app.use(session({secret:"fingerpint",resave: true, saveUninitialized: true}))
 app.use(express.json());
 
 app.use("/user", function auth(req,res,next){
-   let token = req.session.authorization;
-   if(token) {
-       token = token['accessToken'];
+   if(req.session.authorization) {
+       token = req.session.authorization['accessToken'];
        jwt.verify(token, "access",(err,user)=>{
            if(!err){
                req.user = user;
