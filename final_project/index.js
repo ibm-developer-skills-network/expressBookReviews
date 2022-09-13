@@ -13,82 +13,111 @@ app.use("/general", general_routes);
 
 
 //Middleware for customer (with authetication)
+
 app.use("/customer", function auth(req,res,next){
-    console.log("inside authentication!");
-// Middleware which tells that the user is authenticated or not
+    console.log("Inside Customer Authentication!");
+// Middleware which tells whether the customer is authenticated or not
    let token = req.headers["authorization"];
-   token = token.split(" ")[1]; // Access Token
-   jwt.verify(token, "access",(err,user)=>{
-       if(!err){
-           req.user = user;
-           next();
-       }
-       else{
-           return res.status(403).json({message: "Customer not authenticated"})
-       }
-    });
-});
-app.post("/customer", (req,res)=> {
-    res.send("Customer access token authenticated!!");
+
+   //If a token is not provided
+   if (token) {
+    token = token.split(" ")[1]; // Access Token
+
+    // Checking token  validity
+    jwt.verify(token, "access",(err,customer)=>{
+        if(!err){
+            req.customer = customer;
+            next();
+        }
+        else{
+            return res.status(403).json({message: "Customer not authenticated!"})
+        }
+     });
+   }
+   //Error message if a token is not provided
+   else{
+    return res.status(403).json({message: "Invalid token!"})
+   }  
 });
 
-app.use("/customer", customer_routes);
+app.post("/customer", (req,res)=> {
+    res.send("Customer access token authenticated!");
+});
+
+app.use("/customer", routes);
 
 app.post("/customerlogin", (req,res) => {
-    const user = req.body.user;
-    if (!user) {
+    const customer = req.body.customer;
+    if (!customer) {
         return res.status(404).json({message: "Body Empty"});
     }
     let accessToken = jwt.sign({
-        data: user
+        data: customer
       }, 'access', { expiresIn: 60 * 60 });
       let refreshToken = jwt.sign({
-        data: user
+        data: customer
       }, 'refresh', { expiresIn: 60 * 60 * 24});
     return res.status(201).json({
         accessToken,
         refreshToken
     })
+    
 });
+
 
 
 //Middleware for vendor (with authetication)
+
 app.use("/vendor", function auth(req,res,next){
-    console.log("inside authentication!");
-// Middleware which tells that the user is authenticated or not
+    console.log("Inside Vendor Authentication!");
+// Middleware which tells whether the vendor is authenticated or not
    let token = req.headers["authorization"];
-   token = token.split(" ")[1]; // Access Token
-   jwt.verify(token, "access",(err,user)=>{
-       if(!err){
-           req.user = user;
-           next();
-       }
-       else{
-           return res.status(403).json({message: "Vendor not authenticated"})
-       }
-    });
-});
-app.post("/customer", (req,res)=> {
-    res.send("Vendor access token authenticated!!");
+
+   //If a token is not provided
+   if (token) {
+    token = token.split(" ")[1]; // Access Token
+
+    // Checking token  validity
+    jwt.verify(token, "access",(err,user)=>{
+        if(!err){
+            req.vendor = vendor;
+            next();
+        }
+        else{
+            return res.status(403).json({message: "Vendor not authenticated!"})
+        }
+     });
+   }
+   //Error message if a token is not provided
+   else{
+    return res.status(403).json({message: "Invalid token!"})
+
+   }
+   
 });
 
-app.use("/vendor", vendor_routes);
+app.post("/vendor", (req,res)=> {
+    res.send("Customer access token authenticated!");
+});
+
+app.use("/vendor", routes);
 
 app.post("/vendorlogin", (req,res) => {
-    const user = req.body.user;
-    if (!user) {
+    const vendor = req.body.vendor;
+    if (!vendor) {
         return res.status(404).json({message: "Body Empty"});
     }
     let accessToken = jwt.sign({
-        data: user
+        data: vendor
       }, 'access', { expiresIn: 60 * 60 });
       let refreshToken = jwt.sign({
-        data: user
+        data: vendor
       }, 'refresh', { expiresIn: 60 * 60 * 24});
     return res.status(201).json({
         accessToken,
         refreshToken
     })
+    
 });
 
 
