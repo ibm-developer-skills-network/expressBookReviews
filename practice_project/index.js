@@ -66,7 +66,7 @@ app.post("/login", (req,res) => {
     }, 'access', { expiresIn: 60 * 60 });
 
     req.session.authorization = {
-      accessToken,
+      accessToken,username
   }
   return res.status(200).send("User successfully logged in");
   } else {
