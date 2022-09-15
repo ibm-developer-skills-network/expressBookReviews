@@ -25,7 +25,7 @@ router.get("/:email",(req,res)=>{
 
 
 // POST request: Create a new user
-router.post("/new/",(req,res)=>{
+router.post("/",(req,res)=>{
   // Update the code here
   res.send("Yet to be implemented")//This line is to be replaced with actual return value
 });
