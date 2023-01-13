@@ -56,20 +56,21 @@ public_users.get('/',function (req, res) {
 public_users.get('/isbn/:isbn',function (req, res) {
     //Write your code here
     let myPromise = new Promise(function(myResolve, myReject) {   
-        const singlebook = ((books, req) => {        
-            for(var keys in books){
-                if(books[keys].isbn === req.params.isbn){                
-                    return books[keys];
-                }
+        let bookToReturn = null;
+        for(var keys in books){
+            if(books[keys].isbn === req.params.isbn){                
+                bookToReturn =  books[keys];
+                break;
             }
-        });
-        const bookToReturn = singlebook(books, req);
+        }
 
-        if(!book.isEmpty()){
+        if(bookToReturn){
+
             myResolve(JSON.stringify(bookToReturn));
 
         } else {
-            myReject("There is no book in the library with this ISBN");
+            //myReject("There is no book in the library with this ISBN");
+            myReject("The book you are looking for does not exist");
         }
     });
 
@@ -84,33 +85,57 @@ public_users.get('/isbn/:isbn',function (req, res) {
 // Get book details based on author
 public_users.get('/author/:author',function (req, res) {
     //Write your code here
-    const booksToDisplay = ((books, req) => {
-        let booksToDisplay = [];
+    let myPromise = new Promise(function(myResolve, myReject) {   
+        let booksToReturn = {"books":[]};
         for(var keys in books){
             if(books[keys].author === req.params.author){                
-                booksToDisplay.push(books[keys]);
+                booksToReturn["books"].push(books[keys]);
             }
         }
-        return booksToDisplay;
+        let response = "";
+        if(booksToReturn["books"].length > 0){        
+            response = JSON.stringify(booksToReturn);
+            myResolve(response);
+        } else {  
+            response = "The author you are looking for does not exist";
+            myReject(response);
+        }
+        
     });
 
-    return res.send(booksToDisplay(books, req));
+    myPromise.then(
+        function(value) { return res.send(value) },
+        function(error) { return res.send(error) }
+    );
+    
+    
 });
 
 // Get all books based on title
 public_users.get('/title/:title',function (req, res) {
-  //Write your code here
-    const booksToDisplay = ((books, req) => {
-        let booksToDisplay = [];
+    //Write your code here
+    let myPromise = new Promise(function(myResolve, myReject) {   
+        let booksToReturn = {"books":[]};
         for(var keys in books){
             if(books[keys].title === req.params.title){                
-                booksToDisplay.push(books[keys]);
+                booksToReturn["books"].push(books[keys]);
             }
         }
-        return booksToDisplay;
+        let response = "";
+        if(booksToReturn["books"].length > 0){        
+            response = JSON.stringify(booksToReturn);
+            myResolve(response);
+        } else {  
+            response = "The title you are looking for does not exist";
+            myReject(response);
+        }
+        
     });
 
-    return res.send(booksToDisplay(books, req));
+    myPromise.then(
+        function(value) { return res.send(value) },
+        function(error) { return res.send(error) }
+    );
 });
 
 //  Get book review
