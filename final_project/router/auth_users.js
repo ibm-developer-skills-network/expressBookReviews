@@ -103,9 +103,9 @@ regd_users.get('/auth/book/autor/:autor',function (req, res) {
 
 	let autor = req.params.autor;
 
-	let retornaBookIsbn = `http://localhost:5000/author/${autor}`;
+	let retornaBookautor = `http://localhost:5000/author/${autor}`;
 
-	sendGetRequest(retornaBookIsbn).then(restorno => res.send(restorno));
+	sendGetRequest(retornaBookautor).then(restorno => res.send(restorno));
 
 });
 
@@ -113,9 +113,9 @@ regd_users.get('/auth/book/title/:title',function (req, res) {
 
 	let title = req.params.title;
 
-	let retornaBookIsbn = `http://localhost:5000/title/${title}`;
+	let retornaBooktitle = `http://localhost:5000/title/${title}`;
 
-	sendGetRequest(retornaBookIsbn).then(restorno => res.send(restorno));
+	sendGetRequest(retornaBooktitle).then(restorno => res.send(restorno));
 
 });
 
