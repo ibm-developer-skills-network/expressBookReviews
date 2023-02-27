@@ -23,26 +23,44 @@ public_users.post("/register", (req, res) => {
   return res.status(404).json({ message: "Unable to register user." })
 });
 
-function getBooks() {
-  return new Promise((resolve, reject) => {
-    axios.get('http://localhost:5000').then((res) => {
-      resolve(res.data);
-    })
-    .catch((err) => {
-      reject(err);
-    });
-  });
+async function getBooks(isbn) {
+  try {
+    const { data } = await axios.get('http://localhost:5000');
+    return data;
+  } 
+  catch (e) {
+    throw e;
+  }
 }
 
-function getBookByIsbn(isbn) {
-  return new Promise((resolve, reject) => {
-    axios.get('http://localhost:5000/isbn/' + isbn).then((res) => {
-      resolve(res.data);
-    })
-    .catch((err) => {
-      reject(err);
-    });
-  });
+async function getBookByIsbn(isbn) {
+  try {
+    const { data } = await axios.get('http://localhost:5000/isbn/' + isbn);
+    return data;
+  } 
+  catch (e) {
+    throw e;
+  }
+}
+
+async function getBooksByAuthor(author) {
+  try {
+    const { data } = await axios.get('http://localhost:5000/author/' + author);
+    return data;
+  } 
+  catch (e) {
+    throw e;
+  }
+}
+
+async function getBookByTitle(title) {
+  try {
+    const { data } = await axios.get('http://localhost:5000/title/' + title);
+    return data;
+  } 
+  catch (e) {
+    throw e;
+  }
 }
 
 function getBookByAuthor(author) {
@@ -77,7 +95,7 @@ public_users.get('/isbn/:isbn', function (req, res) {
   if (isbn in books) {
     return res.status(200).send(books[isbn]);
   }
-
+ 
   res.sendStatus(404);
 });
 
