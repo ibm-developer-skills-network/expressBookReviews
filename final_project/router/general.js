@@ -37,20 +37,17 @@ public_users.post("/register", (req,res) => {               //TASK 6
 
 
 /*****************************************************************/
-getBooks = async () => {
-    return await getItems("books.json")
-}
 
-saveBooks = async (books) => {
-    await saveItems("books.json", books)
-}
 // Get the book list available in the shop              //TASK 10 async
-public_users.get('/',async (req, res)  {
+public_users.get('/', async (req, res)  => {
 
-    var books = await getBooks();
-    res.send(books.find(x => x.asin == req.params.id))
- 
+   
+    res.send(JSON.stringify(books,null,4));
+   
+
 });
+
+
 
 /*****************************************************************/
 // Get the book list available in the shop              //TASK 1                    
