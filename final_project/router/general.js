@@ -5,7 +5,7 @@ let users = require("./auth_users.js").users;
 
 const public_users = express.Router();
 
-//verifica si el usuario ingresado es correcto o es una cadena vacia
+//Basic check 
 const doesExist = (username)=>{
     let userswithsamename = users.filter((user)=>{
       return user.username === username
@@ -35,38 +35,90 @@ public_users.post("/register", (req,res) => {               //TASK 6
   return res.status(300).json({message: "Yet to be implemented"});
 });
 
+/*********************** SYNC TASK *********************** USING PROMISES */
 
-/*****************************************************************/
+// Get the book list available in the shop              //TASK 10 ASYNC
+public_users.get('/async_books', function (req, res)  {
+  
+    const get_books = new Promise((resolve, reject) => {
+    resolve(res.send(JSON.stringify({books}, null, 4)));
+  });
 
-// Get the book list available in the shop              //TASK 10 async
-public_users.get('/', async (req, res)  => {
-
-   
-    res.send(JSON.stringify(books,null,4));
-   
+  get_books.then(() => console.log("Promise for Task 10 resolved"));
 
 });
 
+// Get book details based on ISBN                       //TASK 11 ASYNC
+public_users.get('/isbn_async/:isbn',function (req, res) {
+  
+    const isbn = req.params.isbn;
+    const get_isbn = new Promise((resolve, reject) => {
+    
+        resolve(res.send(books[isbn]));
+      });
+    
+      get_isbn.then(() => console.log("Promise for find isbn "+ isbn));
+    
+    });
+  
+// Get book details based on author                      //TASK 12 ASYNC
+public_users.get('/author_async/:author',function (req, res) {   
+    
+    const author = req.params.author;
+    const get_author = new Promise((resolve, reject) => {
+    
+        resolve(res.send(searchByAuthor(author)));
+      });
+    
+    get_author.then(() => console.log("Promise for find Author: " + author));    
+    
+ });
 
-
-/*****************************************************************/
+ // Get all books based on title                        //TASK 13 ASYNC
+public_users.get('/title_async/:title',function (req, res) {      
+    const title = req.params.title;
+    const get_title = new Promise((resolve, reject) => {
+    
+        resolve(res.send(searchByTitle(title)));
+      });
+    
+    get_title.then(() => console.log("Promise for find the Title: " + title));
+    
+ });
+    
+/****************** END ASYNC TASK ******************/
+/***************     FUNCTIONS EXTRA *************/
+function searchByAuthor(authorName) {
+    let results = [];
+    for (let bookId in books) {
+      let book = books[bookId];
+      if (book.author === authorName) {
+        results.push(book);
+      }
+    }
+    return results;
+}
+function searchByTitle(titleName) {
+    let results = [];
+    for (let bookId in books) {
+      let book = books[bookId];
+      if (book.title === titleName) {
+        results.push(book);
+      }
+    }
+    return results;
+}
+/*********************** SYNC TASK ***********************/
 // Get the book list available in the shop              //TASK 1                    
-
 public_users.get('/',function (req, res)  {
   
   res.send(JSON.stringify(books,null,4));               
-  //return res.status(300).json({message: "Yet to be implemented"});
 
 });
 
 
-
-
-
-//******************************************************************************************************** */
-
 // Get book details based on ISBN                       //TASK 2
- public_users.get('/isbn/:isbn',function (req, res) {
+ public_users.get('/isbn/:isbn', function (req, res) {
   
     const isbn = req.params.isbn;
     res.send(books[isbn]);
@@ -76,42 +128,31 @@ public_users.get('/',function (req, res)  {
 public_users.get('/author/:author',function (req, res) {    //TASK 3
     
     const author = req.params.author;
-    let claves=Object.keys(books);
-    for (let i in claves)
-        {
-            res.send(books[claves[i]]);
-        }
-    res.send(books[author]);
+    res.send(searchByAuthor(author));
     
+    console.log("Find an Author: " + author);    
  });
 
 // Get all books based on title
 public_users.get('/title/:title',function (req, res) {      //TASK 4
     const title = req.params.title;
-    for (let i in claves)
-        {
-            res.send(books[claves[i]]);
-        }
-    res.send(books[title]);
+    const get_title = new Promise((resolve, reject) => {
+    res.send(searchByTitle(title));
+      });
     
-
-  //return res.status(300).json({message: "Yet to be implemented"});
-});
+    console.log("Find the Title: " + title);
+    
+ });
 
 //  Get book review
 public_users.get('/review/:isbn',function (req, res) {      //TASK 5
   
-  
   const isbn = req.params.isbn;
   const review = req.params.review;
-  //const user = req.session.authorization["username"];
-
-  //books[isbn]["reviews"]=review;
+  
   console.log(books[isbn]["reviews"]);
   res.send(isbn + " new review finded!:" + books[isbn]["reviews"]);
 
-
-  return res.status(300).json({message: "Yet to be implemented"});
 });
 
 module.exports.general = public_users;
