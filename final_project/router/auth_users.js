@@ -10,7 +10,7 @@ const isValid = (username)=>{ //returns boolean
 }
 
 const authenticatedUser = (username,password)=>{ //returns boolean
-//write code to check if username and password match the one we have in records.
+
 let validusers = users.filter((user)=>{
     return (user.username === username && user.password === password)
   });
@@ -52,15 +52,14 @@ regd_users.post("/login", (req,res) => {                    //TASK 7
           .status(208)
           .json({ message: "Invalid Login. Check username and password" });
   }
-  //return res.status(300).json({message: "Yet to be implemented"});
+ 
 });
 
 
 
 // Add a book review                                    //TASK 8
 regd_users.put("/auth/review/:isbn", (req, res) => {
-  //Write your code here
-//Write your code here
+ 
     const isbn = req.params.isbn;
     const review = req.query.review;
     const user = req.session.authorization["username"];
@@ -69,7 +68,7 @@ regd_users.put("/auth/review/:isbn", (req, res) => {
 
     res.send("ISBN: "+ isbn + "   A new review added! Tks user: " + user );
 
- // return res.status(300).json({message: "Yet to be implemented"});
+ 
 });
 
  // delete book review
