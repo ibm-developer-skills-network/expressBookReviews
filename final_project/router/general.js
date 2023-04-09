@@ -7,13 +7,13 @@ const public_users = express.Router();
 
 public_users.post("/register", (req,res) => {
   //Write your code here
-  const username = req.query.username;
-  const password = req.query.password;
+  const username = req.body.username;
+  const password = req.body.password;
 
   if (username && password) {
     if (!isValid(username)) { 
       users.push({"username":username,"password":password});
-      return res.status(200).json({message: "User successfully registred. Now you can login"});
+      return res.status(200).json({message: "Customer successfully registred. Now you can login"});
     } else {
       return res.status(404).json({message: "User already exists!"});    
     }
@@ -41,14 +41,14 @@ public_users.get('/isbn/:isbn',function (req, res) {
 public_users.get('/author/:author',function (req, res) {
   //Write your code here
   const theAuthor = req.params.author;
-  let filtered_books = [];
-  for (key in books){
+  let filtered_books = {};
+  for (var key in books){
     if(books[key].author === theAuthor){
-      filtered_books.push(books[key]);
+      filtered_books[key] = books[key];
     }
 
   }
-    res.send(filtered_books);
+    res.send({"booksbyauthor":filtered_books});
   //return res.status(300).json({message: "Yet to be implemented"});
 });
 
@@ -56,14 +56,14 @@ public_users.get('/author/:author',function (req, res) {
 public_users.get('/title/:title',function (req, res) {
   //Write your code here
   const theTitle = req.params.title;
-  let filtered_books = [];
-  for (key in books){
+  let filtered_books = {};
+  for (var key in books){
     if(books[key].title === theTitle){
-      filtered_books.push(books[key]);
+        filtered_books[key] = books[key];
     }
 
   }
-    res.send(filtered_books);
+    res.send({"booksbytitle":filtered_books});
 
   //return res.status(300).json({message: "Yet to be implemented"});
 });
