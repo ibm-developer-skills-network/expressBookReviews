@@ -40,15 +40,14 @@ public_users.get('/isbn/:isbn',function (req, res) {
  });
   
  const booksByAuthor =(author)=>{
-  const theAuthor = author;
   let filtered_books = {};
     return new Promise((resolve, reject )=>{
       for (var key in books){
-        if(books[key].author === theAuthor){
+        if(books[key].author === author){
           filtered_books[key] = books[key];
         }
       }
-      resolve(filtered_books.length)
+      resolve({"booksbyauthor":filtered_books})
 
     })
  }
@@ -70,20 +69,36 @@ public_users.get('/author/:author',function (req, res) {
 
 });
 
+const booksByTitle =(title)=>{
+    
+  let filtered_books = {};
+      return new Promise((resolve, reject )=>{
+        for (var key in books){
+            if(books[key].title === title){
+                filtered_books[key] = books[key];
+            }
+        
+          }
+        resolve({"booksbyauthor":filtered_books})
+  
+      })
+   }
+   
 // Get all books based on title
 public_users.get('/title/:title',function (req, res) {
   //Write your code here
   const theTitle = req.params.title;
-  let filtered_books = {};
-  for (var key in books){
-    if(books[key].title === theTitle){
-        filtered_books[key] = books[key];
-    }
+//   let filtered_books = {};
+//   for (var key in books){
+//     if(books[key].title === theTitle){
+//         filtered_books[key] = books[key];
+//     }
 
-  }
-    res.send({"booksbytitle":filtered_books});
+//   }
+//     res.send({"booksbytitle":filtered_books});
+booksByTitle(theTitle).then(result => res.send(result))
+    .catch(err => res.status(500).send(err));
 
-  //return res.status(300).json({message: "Yet to be implemented"});
 });
 
 //  Get book review
