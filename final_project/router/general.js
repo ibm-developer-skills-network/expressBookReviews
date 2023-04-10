@@ -21,20 +21,22 @@ public_users.post("/register", (req,res) => {
   return res.status(404).json({message: "Unable to register user."});
   //return res.status(300).json({message: "Yet to be implemented"});
 });
-
+const getAllBooks = Promise.resolve(JSON.stringify ({"books": books}));
 // Get the book list available in the shop
 public_users.get('/',function (req, res) {
   //Write your code here
-  res.send(JSON.stringify ({"books": books}));
-  //return res.status(300).json({message: "Yet to be implemented"});
+  getAllBooks.then(result=> res.send(result))
+  .catch(err => res.status(500).send(err))
+ // res.send(JSON.stringify ({"books": books}));
 });
-
+const bookByIsbn = (isbn) => Promise.resolve(books[isbn]);
 // Get book details based on ISBN
 public_users.get('/isbn/:isbn',function (req, res) {
   //Write your code here
     const isbn = req.params.isbn;
-    res.send(books[isbn]);
-  //return res.status(300).json({message: "Yet to be implemented"});
+    bookByIsbn(isbn).then(result => res.send(result))
+    .catch(err => res.status(500).send(err));
+  //  res.send(books[isbn]);
  });
   
 // Get book details based on author
