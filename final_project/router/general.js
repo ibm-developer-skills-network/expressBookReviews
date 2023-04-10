@@ -48,7 +48,7 @@ public_users.get('/isbn/:isbn',function (req, res) {
           filtered_books[key] = books[key];
         }
       }
-      resolve({"booksbyauthor":filtered_books})
+      resolve(filtered_books.length)
 
     })
  }
