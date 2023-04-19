@@ -3,6 +3,7 @@ let books = require("./booksdb.js");
 let isValid = require("./auth_users.js").isValid;
 let users = require("./auth_users.js").users;
 const public_users = express.Router();
+const axios = require('axios');
 
 
 public_users.post("/register", (req,res) => {
@@ -21,12 +22,25 @@ public_users.post("/register", (req,res) => {
   });
 
 // Get the book list available in the shop
+
 public_users.get('/',function (req, res) {
   //Write your code here
   books_list = JSON.stringify(books,null,4);
   res.send(books_list)
   return res.status(300).json({message: "Error"});
 });
+
+const sendGetRequest = async () => {
+    try {
+        const resp = await axios.get('https://riccardoabba-5000.theiadocker-1-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai/');
+        console.log(resp.data);
+    } catch (err) {
+        // Handle Error Here
+        console.error(err);
+    }
+};
+
+sendGetRequest();
 
 // Get book details based on ISBN
 public_users.get('/isbn/:isbn',function (req, res) {
@@ -35,6 +49,18 @@ public_users.get('/isbn/:isbn',function (req, res) {
   res.send(JSON.stringify(books[isbn],null,4))
   return res.status(300).json({message: "ISBN not found"});
  });
+
+ const sendGetRequestIsbn = async () => {
+    try {
+        const resp = await axios.get('https://riccardoabba-5000.theiadocker-1-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai/isbn/3');
+        console.log(resp.data);
+    } catch (err) {
+        // Handle Error Here
+        console.error(err);
+    }
+};
+
+sendGetRequestIsbn();
   
 // Get book details based on author
 public_users.get('/author/:author',function (req, res) {
@@ -52,6 +78,18 @@ public_users.get('/author/:author',function (req, res) {
   return res.status(300).json({message: "Author not found"});
 });
 
+const sendGetRequestAuthor = async () => {
+    try {
+        const resp = await axios.get('https://riccardoabba-5000.theiadocker-1-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai/author/"Dante Alighieri"');
+        console.log(resp.data);
+    } catch (err) {
+        // Handle Error Here
+        console.error(err);
+    }
+};
+
+sendGetRequestAuthor();
+
 // Get all books based on title
 public_users.get('/title/:title',function (req, res) {
   //Write your code here
@@ -66,6 +104,18 @@ public_users.get('/title/:title',function (req, res) {
   }
   return res.status(300).json({message: "Title not found"});
 });
+
+const sendGetRequestTitle = async () => {
+    try {
+        const resp = await axios.get('https://riccardoabba-5000.theiadocker-1-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai/title/"The Epic Of Gilgamesh"');
+        console.log(resp.data);
+    } catch (err) {
+        // Handle Error Here
+        console.error(err);
+    }
+};
+
+sendGetRequestTitle();
 
 //  Get book review
 public_users.get('/review/:isbn',function (req, res) {

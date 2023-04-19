@@ -79,7 +79,7 @@ regd_users.delete("/auth/review/:isbn", (req, res) => {
 
     if (book && authenticatedUser(username,password) && Object.keys(books[isbn].reviews).length){
         delete books[isbn].reviews[username];
-        res.send(`Review for user ${username} for ISBN ${isbn} deleted.`);
+        res.send(`Review for user ${users.username} for ISBN ${isbn} deleted.`);
     }
 
     else{
