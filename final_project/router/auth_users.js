@@ -51,20 +51,16 @@ regd_users.post("/login", (req,res) => {
 // Add a book review
 regd_users.put("/auth/review/:isbn", (req, res) => {
     //Write your code here
+    const username = req.body.username;
+    const password = req.body.password;
     const isbn = req.params.isbn;
     let book = books[isbn]
-    if (book) { //Check is friend exists
-        let review = req.body.reviews;
-        //Add similarly for firstName
-        //Add similarly for lastName
 
-        //if DOB the DOB has been changed, update the DOB 
-        if(review) {
-            books["reviews"] = review
-        }
-        //Add similarly for firstName
-        //Add similarly for lastName
-        books[isbn].reviews=review;
+    if (book && authenticatedUser(username,password)) { //Check if book exists and the user logged in
+        let review = req.body.reviews;
+        
+        //Add review if username is different, otherwise it overwrites it
+        books[isbn].reviews[username]=review;
         res.send(`Review for book with ISBN ${isbn} added.`);
     }
     else{
