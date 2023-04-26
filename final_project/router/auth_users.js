@@ -19,14 +19,6 @@ const authenticatedUser = (username, password) => {
   }
 };
 
-const app = express();
-
-app.use(
-  session({ secret: "fingerpint" }, (resave = true), (saveUninitialized = true))
-);
-
-app.use(express.json());
-
 //only registered users can login
 regd_users.post("/login", (req, res) => {
   const username = req.body.username;
@@ -45,7 +37,20 @@ regd_users.post("/login", (req, res) => {
 
 // Add a book review
 regd_users.put("/auth/review/:isbn", (req, res) => {
-  return res.status(300).json({ message: "Yet to be implemented" });
+  const isbn = req.params.isbn;
+  const review = req.body.review;
+  if (isbn && review) {
+    let book = books.filter((book) => {
+      return book.isbn === isbn;
+    });
+    if (book.length > 0) {
+      book[0].reviews.push(review);
+      return res.status(200).json({ message: "Review successfully added" });
+    } else {
+      return res.status(404).json({ message: "Book not found" });
+    }
+  }
+  return res.status(404).json({ message: "Unable to add review" });
 });
 
 module.exports.authenticated = regd_users;
