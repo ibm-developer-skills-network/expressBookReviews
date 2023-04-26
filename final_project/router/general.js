@@ -89,7 +89,18 @@ public_users.get('/books',function (req, res) {
 
   });
 
- // TASK 11 - getting the book details based on ISBN using Promises
+ /// TASK 11 - getting the book details based on ISBN using Promises
+public_users.get('/ISBN',function (req, res) {
+
+    const get_ISBN = new Promise((resolve, reject) => {
+        resolve(res.send(JSON.stringify({ISBN}, null, 4)));
+      });
+
+      get_ISBN.then(() => console.log("Promise for Task 11 resolved"));
+
+  });
+  
+  // TASK 12 - getting the book details based on ISBN using Promises
 public_users.get('/ISBN',function (req, res) {
 
     const get_ISBN = new Promise((resolve, reject) => {
