@@ -5,7 +5,7 @@ let users = require("./auth_users.js").users;
 const public_users = express.Router();
 
 public_users.post("/register", (req,res) => {
-  //Write your code here
+  //Write your code here Async
     const username = req.body.username;//das will es nicht übergeben!!!!!
     const password = req.body.password;
     const doesExist = (username) => { let does = users.filter((user) => {
