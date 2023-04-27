@@ -12,6 +12,7 @@ const isValid = (username)=>{ //returns boolean
         );
        if (does.length > 0) {return true} else {return false};
     };
+
     const authenticatedUser = (username,password)=>{ //returns boolean
     //write code to check if username and password match the one we have in records.
     let validusers = users.filter((user) => {
@@ -28,7 +29,7 @@ const isValid = (username)=>{ //returns boolean
       //Write your code here  
       const username = req.body.username;
       const password= req.body.password;
-
+    
     if (!username || !password) {
         return res.status(404).json({message: "Error logging in"});
     }
@@ -39,6 +40,8 @@ const isValid = (username)=>{ //returns boolean
       req.session.authorization = {
         accessToken,username
     }
+    console.log(users);
+    console.log(req.session.authorization);
     
     return res.status(200).send("User successfully logged in");
     } else {
@@ -52,11 +55,7 @@ const isValid = (username)=>{ //returns boolean
         let isbn = req.params.isbn;
         let username = req.body.username;
         let review = req.body.review;
-        if (books[isbn].reviews.length=0){
-            books[isbn].reviews = review; 
-        } else   {
-            (books[isbn].reviews + review);
-        }
+        res.send(JSON.stringify(books[isbn].reviews,null,4));
         
         //If the same user posts a different review on the same ISBN, it should modify the existing review.
         // If another user logs in and posts a review on the same ISBN, it will get added as a different review under the same ISBN
