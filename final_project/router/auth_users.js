@@ -56,17 +56,36 @@ const isValid = (username)=>{ //returns boolean
         let book = books[isbn];
         //erstmal eine Review posten
         if (book) {
-            let username = req.body.username;
+            let username =  req.session.authorization['username'];
             let review = req.body.review;
 
             if (review) {  
-                book["reviews"]  = JSON.stringify(book["reviews"],null,4) + "Review of "+username+": "+review;
+                if (!book.reviews[username]) {
+                    book.reviews[username] = {text:review};
+                } else if (book.reviews[username]) {
+                    book.reviews[username].text=review;
                 }
-        }
-        
+            //res.status(200).send("Review added");
+            }
         res.send(JSON.stringify(books[isbn],null,4))
-    
+        }
     });
+
+    regd_users.delete("/auth/review/:isbn",(req,res) =>{
+        let isbn = req.params.isbn;
+        let book = books[isbn];
+        //erstmal eine Review posten
+        if (book) {
+            let username = req.session.authorization['username'];
+
+             if (book.reviews[username]) {
+                    delete book.reviews[username]; 
+                    res.send(JSON.stringify(books[isbn],null,4));
+                }
+            }
+        
+    });
+
     module.exports.authenticated = regd_users;
     module.exports.isValid = isValid;
     module.exports.users = users;

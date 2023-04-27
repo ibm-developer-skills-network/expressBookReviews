@@ -80,8 +80,14 @@ public_users.put("/review/:isbn", (req, res) => {
             let review = req.body.review;
 
             if (review) {  
-                book["reviews"]  = JSON.stringify(book["reviews"],null,4) + "Review of "+username+": "+review;
+                if (!book.reviews[username]) {
+                    book.reviews[username] = {text:review};
+                } else if (book.reviews[username]) {
+                    book.reviews[username].text=review;
                 }
+            //res.status(200).send("Review added");
+            }
+        
         }
         
         res.send(JSON.stringify(books[isbn],null,4))
