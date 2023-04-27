@@ -69,4 +69,22 @@ public_users.get('/review/:isbn',function (req, res) {
    res.send(JSON.stringify(books[isbn].reviews,null,4));
 });
 
+public_users.put("/review/:isbn", (req, res) => {
+      //Write your code here
+        //You have to give a review as a request query & it must get posted with the username (stored in the session) posted.
+        let isbn = req.params.isbn;
+        let book = books[isbn];
+        //erstmal eine Review posten
+        if (book) {
+            let username = req.body.username;
+            let review = req.body.review;
+
+            if (review) {  
+                book["reviews"]  = JSON.stringify(book["reviews"],null,4) + "Review of "+username+": "+review;
+                }
+        }
+        
+        res.send(JSON.stringify(books[isbn],null,4))
+    });
+
 module.exports.general = public_users;

@@ -53,13 +53,18 @@ const isValid = (username)=>{ //returns boolean
       //Write your code here
         //You have to give a review as a request query & it must get posted with the username (stored in the session) posted.
         let isbn = req.params.isbn;
-        let username = req.body.username;
-        let review = req.body.review;
-        res.send(JSON.stringify(books[isbn].reviews,null,4));
+        let book = books[isbn];
+        //erstmal eine Review posten
+        if (book) {
+            let username = req.body.username;
+            let review = req.body.review;
+
+            if (review) {  
+                book["reviews"]  = JSON.stringify(book["reviews"],null,4) + "Review of "+username+": "+review;
+                }
+        }
         
-        //If the same user posts a different review on the same ISBN, it should modify the existing review.
-        // If another user logs in and posts a review on the same ISBN, it will get added as a different review under the same ISBN
-        
+        res.send(JSON.stringify(books[isbn],null,4))
     
     });
     module.exports.authenticated = regd_users;
