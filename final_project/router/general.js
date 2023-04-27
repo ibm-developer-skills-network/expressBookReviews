@@ -25,7 +25,61 @@ public_users.post("/register", (req,res) => {
         }
         
 });
- 
+
+public_users.get("/", async (req,res) => {
+    try {
+        const booklist = await books;
+        res.send(JSON.stringify(booklist, null, 4));
+        } catch (error) {
+            res.status(500).send(error);
+        }
+    });
+
+public_users.get("/isbn/:isbn", async (req,res) => {
+    let isbn= req.params.isbn;
+    try {
+        const book = await books[isbn];
+        res.send(JSON.stringify(book, null, 4));
+        } catch (error) {
+            res.status(500).send(error);
+        }
+    });
+
+public_users.get("/author/:author", async (req,res) => {
+    let author = req.params.author;
+    let result = []
+    try {    
+        for (key in books) { //hier gehe ich durch alle elemente in books
+            let book = books[key]; // book ist ein sub JSON/array an der Stelle key
+            if (book.author === author){
+                result.push(book); // hier pushe ich den inhalt von book in das result
+            }
+        }
+            res.send(JSON.stringify(result,null,4));
+        
+        } catch (error) {
+            res.status(500).send(error);
+        }
+    });
+
+public_users.get("/title/:title", async (req,res) => {
+    let title = req.params.title;
+    let result = [];
+    try {
+        for (key in books) { //hier gehe ich durch alle elemente in books
+            let book = books[key]; // book ist ein sub JSON/array an der Stelle key
+               if (book.title === title) {
+                result.push(book); // hier pushe ich den inhalt von book in das result
+                res.send(JSON.stringify(result,null,4)); 
+                }
+            }
+         } catch (error) {res.status(500).send(error);
+
+    }
+        
+    });
+
+/*
 // Get the book list available in the shop
 public_users.get('/',function (req, res) {
     res.send(JSON.stringify(books,null,4));  
@@ -92,5 +146,6 @@ public_users.put("/review/:isbn", (req, res) => {
         
         res.send(JSON.stringify(books[isbn],null,4))
     });
+    */
 
 module.exports.general = public_users;
