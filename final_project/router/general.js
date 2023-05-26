@@ -5,19 +5,8 @@ let users = require("./auth_users.js").users;
 const public_users = express.Router();
 
 public_users.post("/register", (req,res) => {
-  const username = req.body.username;
-  const password = req.body.password;
-
-  if (username && password) {
-    
-    if (!isValid(username)) { 
-      users.push({"username":username,"password":password});
-      return res.status(200).json({message: "Customer successfully registred. Now you can login"});
-    } else {
-      return res.status(404).json({message: "Customer with same username already exists!"});    
-    }
-  } 
-  return res.status(404).json({message: "Unable to register customer."});
+    users.push({"username":req.body.username,"password":req.body.password});
+    res.send("The user" + (' ')+ (req.body.username) + " Has been added!")
 });
 
 // Get the book list available in the shop
