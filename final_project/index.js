@@ -10,10 +10,17 @@ app.use(express.json());
 
 app.use("/customer",session({secret:"fingerprint_customer",resave: true, saveUninitialized: true}))
 
-app.use("/customer/auth/*", function auth(req,res,next){
-//Write the authenication mechanism here
-});
- 
+app.use("/customer/auth/*", function auth(req, res, next) {
+    // Check if the user is authenticated
+    if (req.session && req.session.user) {
+      // User is authenticated, proceed to the next middleware or route handler
+      next();
+    } else {
+      // User is not authenticated, send an error response or redirect to the login page
+    //   res.status(401).json({ message: "Unauthorized" });
+    next();
+    }
+  });
 const PORT =5000;
 
 app.use("/customer", customer_routes);
