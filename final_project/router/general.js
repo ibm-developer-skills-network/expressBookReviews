@@ -27,34 +27,42 @@ public_users.get('/',function (req, res) {
 
 // Get book details based on ISBN
 public_users.get('/isbn/:isbn',function (req, res) {
-  const isbn = req.params.isbn;
-  let filtered_users = users.filter((user) => user.isbn === isbn);
-    res.send(filtered_users);
-    return res.status(200).json({message: "Successful"});
- });
+    const isbn = req.params.isbn;
+    res.send(books[isbn])
+   });
   
 // Get book details based on author
 public_users.get('/author/:author',function (req, res) {
-  const author = req.params.author;
-  let filtered_users = users.filter((user)=> user.author === author);
-  res.send(filtered_users);
-  return res.status(300).json({message: "Successful"});
+  let booksbyauthor = [];
+  let isbns = Object.keys(books);
+  isbns.forEach((isbn) => {
+    if(books[isbn]["author"] === req.params.author) {
+      booksbyauthor.push({"isbn":isbn,
+                          "title":books[isbn]["title"],
+                          "reviews":books[isbn]["reviews"]});
+    }
+  });
+  res.send(JSON.stringify({booksbyauthor}, null, 4));
 });
 
 // Get all books based on title
 public_users.get('/title/:title',function (req, res) {
-    const title = req.params.title;
-    let filtered_users = users.filter((user)=> user.title === title);
-    res.send(filtered_users);
-  return res.status(300).json({message: "Successful"});
-});
+    let booksbytitle = [];
+    let isbns = Object.keys(books);
+    isbns.forEach((isbn) => {
+      if(books[isbn]["title"] === req.params.title) {
+        booksbytitle.push({"isbn":isbn,
+                            "author":books[isbn]["author"],
+                            "reviews":books[isbn]["reviews"]});
+      }
+    });
+    res.send(JSON.stringify({booksbytitle}, null, 4));
+  });
 
 //  Get book review
 public_users.get('/review/:isbn',function (req, res) {
-    const review = req.params.review;
-    let filtered_users = users.filter((user)=> user.review === review);
-    res.send(filtered_users);
-  return res.status(200).json({message: "Successful"});
-});
+    const isbn = req.params.isbn;
+    res.send(books[isbn]["reviews"])
+  });
 
 module.exports.general = public_users;

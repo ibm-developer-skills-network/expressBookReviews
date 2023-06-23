@@ -51,31 +51,35 @@ regd_users.post("/login", (req,res) => {
   });
 
 // Add a book review
-regd_users.put("/auth/review/:isbn", (req,res) => {
-    const isbn = req.params.isbn
-    let book = books[isbn]
+regd_users.put("/auth/review/:isbn", (req, res) => {
 
-    if (book) {
-        let update = req.query.review;
-        let updAuth = req.session.authenticatedUser["username"];
-    if (review) {
-        book["reviews"][updAuth] = [update];
-        books[isbn]=book
+    const isbn = req.params.isbn;
+    let filtered_book = books[isbn]
+    if (filtered_book) {
+        let review = req.query.review;
+        let reviewer = req.session.authorization['username'];
+        if(review) {
+            filtered_book['reviews'][reviewer] = review;
+            books[isbn] = filtered_book;
+        }
+        res.send(`The review for the book with ISBN  ${isbn} has been added/updated.`);
     }
-    res.send (`Your review of ${isbn} has been addded or updated`)
-    } else {
-        res.send ("Unable to find ISBN")
+    else{
+        res.send("Unable to find this ISBN!");
     }
-    return res.status(200).json({message: "Succeessful"})
+
+  });
+
+// Delete a book review
+
+regd_users.delete("/auth/review/:isbn", (req, res)=>{
+    const isbn = req.params.isbn;
+    const user = req.session.authorization["username"];
+    delete books[isbn]["reviews"][user];
+    res.send("delete success!" + books[isbn]["reviews"])
 });
 
-regd_users.delete("/auth/review/:isbn", (req, res) => {
-    if (book) {
-        delete book.reviews[username];
-        return res.status(200).json(book);
-    }
-    return res.status(404).json({ message: "Invalid ISBN" });
-});
+
 
 
 module.exports.authenticated = regd_users;
