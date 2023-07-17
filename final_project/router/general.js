@@ -86,4 +86,61 @@ public_users.get('/review/:isbn',function (req, res) {
     res.send(JSON.stringify({booksbyisbn}, null, 4)); 
 });
 
+
+// get all books
+function getAllBooks() {
+    return new Promise((resolve, reject) => {
+      setTimeout(() => {
+        resolve(books);
+      }, 3000);
+  
+      return;
+    });
+  }
+  
+  // get all books with given isbn
+  function getBookByISBN(isbn) {
+    return new Promise((resolve, reject) => {
+      setTimeout(() => {
+        const book = books[isbn];
+        if (!book) {
+          reject("Book not found");
+        }
+        resolve(book);
+      }, 3000);
+    });
+  }
+
+  // get all books with given author
+  function getBookByAuthor(author) {
+    return new Promise((resolve, reject) => {
+      setTimeout(() => {
+        const booksByAuthor = [];
+        for (const key in books) {
+          if (books[key].author === author) {
+            booksByAuthor.push(books[key]);
+          }
+        }
+        if (booksByAuthor.length === 0) {
+          reject("Book not found");
+        }
+        resolve(booksByAuthor);
+      }, 3000);
+    });
+  }
+  
+// get all books with given title
+function getBookByTitle(title) {
+    return new Promise((resolve, reject) => {
+      setTimeout(() => {
+        for (const key in books) {
+          if (books[key].title === title) {
+            resolve(books[key]);
+          }
+        }
+        reject("Book not found");
+      }, 3000);
+    });
+  }
+
 module.exports.general = public_users;
