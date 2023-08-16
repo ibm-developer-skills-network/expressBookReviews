@@ -32,25 +32,72 @@ const doesExist = (username) => {
   }
 }
 
+    //Get list of books with Promises and callbacks
+// const getBooks = new Promise((resolve,reject) => {
+//   // console.log(books);
+//   if (books) {
+//     resolve((books));
+//   } else reject("There are no books!")
+// })
+
 // Get the book list available in the shop
 public_users.get('/',function (req, res) {
-  // await axios.get("https://raekwill15-5000.theiadocker-1-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai/")
-  //       .then(stuff => res.json(stuff.data))
-  //       .catch(err => next(err))
-  //       res.send("Ok")
-  return res.status(300).json(books);
+  // getBooks.then((bookList) => {
+  //   console.log(bookList);
+  //   return bookList;
+  // })
+  return res.status(300).send(books);
 });
+
+    // Get book details based on ISBN with Promises and callbacks
+// const byIsbn = function(bookNum) {
+//   const bookByIsbn = new Promise((resolve,reject) => {
+//     if (books[bookNum]) {
+//       resolve(books[bookNum]);
+//     } else reject("There is no book with this ISBN")
+//   });
+
+//   return bookByIsbn.then((book) => {
+//     console.log(book);
+//     return book;
+//   },  console.log("There is no book with this ISBN"))
+// }
 
 // Get book details based on ISBN
 public_users.get('/isbn/:isbn',function (req, res) {
   bookNum = req.params.isbn;
+  // const book = byIsbn(bookNum);
   return res.status(300).send(books[bookNum]);
  });
+
+    // Get book details based on author using Promises and callbacks
+// const byAuthor = function (author) {
+//   let fromAuthor = [];
+//   const booksByAuthor = new Promise ((resolve,reject) => {
+//     for (x in books) {
+//       if (books[x].author.toLowerCase() === author.toLowerCase()) {
+//         fromAuthor.push(books[x]);
+//       }
+//     }
+//     if (fromAuthor.length > 0) {
+//       resolve(fromAuthor);
+//       return fromAuthor;
+//     }
+//     else reject("There are no books by this author!");
+//   });
+
+//   booksByAuthor.then((books) => {
+//     console.log(books);
+//   })
+// }
+
+
 
 // Get book details based on author
 public_users.get('/author/:author',function (req, res) {
   const author = req.params.author;
-  let fromAuthor = [];
+  const fromAuthor=[];
+  // byAuthor(author);
   for (x in books) {
     if (books[x].author.toLowerCase() === author.toLowerCase()) {
       fromAuthor.push(books[x]);
@@ -59,15 +106,33 @@ public_users.get('/author/:author',function (req, res) {
   return res.status(300).json(fromAuthor);
 });
 
+    //Get Book details based on title using Promise callbacks
+// const byTitle = function (title)  {
+//   const bookByTitle = new Promise((resolve,reject) => {
+//     for (x in books) {
+//       if (books[x].title.toLowerCase() === title.toLowerCase()) {
+//         resolve(books[x]);
+//       }
+//     }
+//     reject("There are no books with that title");
+//   })
+
+//   bookByTitle.then((book) => {
+//     
+//    console.log(book);
+//   })
+// }
+
 // Get all books based on title
 public_users.get('/title/:title',function (req, res) {
-  const title = req.params.title; 
+  const title = req.params.title;
+  // byTitle(title); 
   for (x in books) {
     if (books[x].title.toLowerCase() === title.toLowerCase()) {
       return res.status(300).json(books[x]);
     }
   }
-  return res.status(300).json({message: "Yet to be implemented"});
+  return res.status(300).json({message: "No book exists with that title"});
 });
 
 //  Get book review
@@ -75,6 +140,5 @@ public_users.get('/review/:isbn',function (req, res) {
   const bookNum = req.params.isbn;
   return res.status(300).json(books[bookNum].reviews);
 });
-
 
 module.exports.general = public_users;
