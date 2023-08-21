@@ -54,8 +54,8 @@ regd_users.put("/auth/review/:isbn", (req, res) => {
   const myReview = req.query.myReview;
   const currentUsername = req.session.authorization['username'];
   books[isbn].reviews[currentUsername] = myReview;
-  res.send(books[isbn]);
-  //return res.status(200).send(`New review ${myReview} added for book ${isbn}`);
+  //res.send(books[isbn]);
+  return res.status(200).send(`New review ${myReview} added for book ${isbn}`);
 });
 
 // Delete a book review
@@ -70,7 +70,8 @@ regd_users.delete("/auth/review/:isbn", (req, res) => {
             }
         }
     }
-    res.send(books[isbn]);
+    //res.send(books[isbn]);
+    res.status(200).send(`Reviw ${myReview} removed for book ${isbn}`);
 });
 
 module.exports.authenticated = regd_users;
