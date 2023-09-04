@@ -27,37 +27,72 @@ public_users.post("/register", (req,res) => {
 // Get the book list available in the shop
 public_users.get('/',function (req, res) {
   //Write your code here
-  return res.status(200).json({books});
+  ///////////////
+ 
+    let listPromise = new Promise((resolve,reject) => {
+        setTimeout(() => {
+        resolve("Promise resolved")
+        },3000)});
+
+        listPromise.then(() => {
+        return res.status(200).json({books});
+    })
+
 });
 
 // Get book details based on ISBN
 public_users.get('/isbn/:isbn',function (req, res) {
     const isbn = req.params.isbn;
 
-    if( books.hasOwnProperty(isbn) )
-    {
-        return res.status(200).json(books[isbn]);
-    }
-    return res.status(300).json({message: "Are you crazy? That Book does not exist!"});
+    let isbnPromise = new Promise((resolve,reject) => {
+        setTimeout(() => {
+        resolve("Promise resolved")
+        },3000)});
+
+    isbnPromise.then(() => {
+        if( books.hasOwnProperty(isbn) )
+        {
+            return res.status(200).json(books[isbn]);
+        }
+        return res.status(300).json({message: "Are you crazy? That Book does not exist!"});
+    })
+
  });
   
 // Get book details based on author
 public_users.get('/author/:author',function (req, res) 
 {
-    const author = req.params.author;
-    const booksByAuthor = Object.values(books).filter(value => value.author===author);
-     
-    if(!booksByAuthor.length) return res.status(300).json({message:"We don't have that book. Now get out!"});
-    return res.status(200).json({booksByAuthor});
+    let authorPromise = new Promise((resolve,reject) => {
+        setTimeout(() => {
+        resolve("Promise resolved")
+        },3000)});
+
+    authorPromise.then(() => {
+        const author = req.params.author;
+        const booksByAuthor = Object.values(books).filter(value => value.author===author);
+        
+        if(!booksByAuthor.length) return res.status(300).json({message:"We don't have that book. Now get out!"});
+        return res.status(200).json({booksByAuthor});
+        });
+
 });
 
 // Get all books based on title
 public_users.get('/title/:title',function (req, res) {
-    const title = req.params.title;
-    const booksByTitle = Object.values(books).filter(value => value.title===title);
-     
-    if(!booksByTitle.length) return res.status(300).json({message:"We don't have that book. Now get out!"});
-    return res.status(200).json({booksByTitle});
+    
+    let titlePromise = new Promise((resolve,reject) => {
+        setTimeout(() => {
+        resolve("Promise resolved")
+        },3000)});
+
+    titlePromise.then(() => {
+        const title = req.params.title;
+        const booksByTitle = Object.values(books).filter(value => value.title===title);
+        
+        if(!booksByTitle.length) return res.status(300).json({message:"We don't have that book. Now get out!"});
+        return res.status(200).json({booksByTitle});
+
+    })
 });
 
 //  Get book review
