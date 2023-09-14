@@ -24,7 +24,6 @@ const authenticatedUser = (username, password) => { //returns boolean
 //only registered users can login
 regd_users.post("/login", (req, res) => {
   //Write your code here
-  console.log('this is login');
   const username = req.body.username;
   const password = req.body.password;
   if (!username || !password) {
@@ -42,7 +41,29 @@ regd_users.post("/login", (req, res) => {
 // Add a book review
 regd_users.put("/auth/review/:isbn", (req, res) => {
   //Write your code here
-  return res.status(300).json({message: "Yet to be implemented"});
+  const isbn = req.params.isbn;
+  const review = req.body.review;
+  const { username } = req.session.authorization;
+  const book = books[isbn];
+  if (book) {
+    const reviews = book.reviews;
+    reviews[username] = review;
+  }
+  //KISS, using the same response message for all cases
+  res.send(`Review of book (ISBN ${isbn}) updated.`);
+});
+
+// Delete a book review
+regd_users.delete("/auth/review/:isbn", (req,res) =>{
+  const isbn = req.params.isbn;
+  const {username} = req.session.authorization;
+  const book = books[isbn];
+  if (book) {
+    const reviews = book.reviews;
+    delete reviews[username];
+  }
+  //KISS, using the same response message for KISS
+  res.send(`Review of book (ISBN ${isbn}) deleted.`);
 });
 
 module.exports.authenticated = regd_users;
