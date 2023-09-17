@@ -72,14 +72,17 @@ public_users.get('/author/:author', function (req, res) {
 public_users.get('/title/:title', function (req, res) {
   //Write your code here
   const title = req.params.title;
-  const retVal = {};
-  for (let key of Object.keys(books)) {
-    const book = books[key];
-    if (book['title'] === title) {
-      retVal[key] = book;
+  const getBook = new Promise((resolve, reject) => {
+    const retVal = {};
+    for (let key of Object.keys(books)) {
+      const book = books[key];
+      if (book['title'] === title) {
+        retVal[key] = book;
+      }
     }
-  }
-  res.send(JSON.stringify(retVal, null, 4));
+    resolve(retVal);
+  });
+  getBook.then((retVal) => res.send(JSON.stringify(retVal, null, 4)));
 });
 
 //  Get book review
