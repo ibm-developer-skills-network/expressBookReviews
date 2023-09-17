@@ -3,6 +3,7 @@ let books = require("./booksdb.js");
 let isValid = require("./auth_users.js").isValid;
 let users = require("./auth_users.js").users;
 const public_users = express.Router();
+const axios = require('axios');
 
 const doesExist = (username) => {
   let userWithSameName = users.filter((user => {
@@ -34,9 +35,11 @@ public_users.post("/register", (req, res) => {
 
 // Get the book list available in the shop
 public_users.get('/', function (req, res) {
-  //Write your code here
-  //return res.status(300).json({message: "Yet to be implemented"});
-  return res.send(JSON.stringify(books, null, 4));
+  const getBooks = new Promise((resolve, reject)=>{
+    //assume we will get books info from external api through axios here
+    resolve(books);
+  });
+  getBooks.then((retVal)=>res.send(JSON.stringify(retVal, null, 4)));
 });
 
 // Get book details based on ISBN
