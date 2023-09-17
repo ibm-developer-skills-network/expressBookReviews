@@ -3,7 +3,6 @@ let books = require("./booksdb.js");
 let isValid = require("./auth_users.js").isValid;
 let users = require("./auth_users.js").users;
 const public_users = express.Router();
-const axios = require('axios');
 
 const doesExist = (username) => {
   let userWithSameName = users.filter((user => {
@@ -19,7 +18,6 @@ const doesExist = (username) => {
 
 public_users.post("/register", (req, res) => {
   //Write your code here
-  //return res.status(300).json({message: "Yet to be implemented"});
   const username = req.body.username;
   const password = req.body.password;
   if (username && password) {
@@ -56,22 +54,23 @@ public_users.get('/isbn/:isbn', function (req, res) {
 // Get book details based on author
 public_users.get('/author/:author', function (req, res) {
   //Write your code here
-  //return res.status(300).json({message: "Yet to be implemented"});
   const author = req.params.author;
-  const retVal = {};
-  for (let key of Object.keys(books)) {
-    const book = books[key];
-    if (book['author'] === author) {
-      retVal[key] = book;
+  const getBook = new Promise((resolve, reject) => {
+    const retVal = {};
+    for (let key of Object.keys(books)) {
+      const book = books[key];
+      if (book['author'] === author) {
+        retVal[key] = book;
+      }
+      resolve(retVal);
     }
-  }
-  res.send(JSON.stringify(retVal, null, 4));
+  });
+  getBook.then((retVal) => res.send(JSON.stringify(retVal, null, 4)));
 });
 
 // Get all books based on title
 public_users.get('/title/:title', function (req, res) {
   //Write your code here
-  //return res.status(300).json({message: "Yet to be implemented"});
   const title = req.params.title;
   const retVal = {};
   for (let key of Object.keys(books)) {
@@ -86,7 +85,6 @@ public_users.get('/title/:title', function (req, res) {
 //  Get book review
 public_users.get('/review/:isbn', function (req, res) {
   //Write your code here
-  //return res.status(300).json({message: "Yet to be implemented"});
   const isbn = req.params.isbn;
   const book = books[isbn];
   res.send(book ? book.reviews : '');
