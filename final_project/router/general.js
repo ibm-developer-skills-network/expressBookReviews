@@ -91,17 +91,17 @@ public_users.get('/review/:isbn',function (req, res) {
 // Get the list of books available in the shop using Promises
 public_users.get('/books',function (req, res) {
 
-    const get_books = new Promise((resolve, reject) => {
+    const getBookList = new Promise((resolve, reject) => {
         resolve(res.send(JSON.stringify({books}, null, 4)));
       });
 
-      get_books.then(() => console.log("Promise for Task 10 resolved"));
+      getBookList.then(() => console.log("Promise for Task 10 resolved"));
 
 });
 
 // Get the book details based on ISBN using Promises
 public_users.get('/books/isbn/:isbn',function (req, res) {
-    const get_books_isbn = new Promise((resolve, reject) => {
+    const getByIsbn = new Promise((resolve, reject) => {
     const isbn = req.params.isbn;
         if (req.params.isbn <= 10) {
         resolve(res.send(books[isbn]));
@@ -110,8 +110,7 @@ public_users.get('/books/isbn/:isbn',function (req, res) {
             reject(res.send('ISBN not found'));
         }
     });
-    get_books_isbn.
-        then(function(){
+    getByIsbn.then(function(){
             console.log("Promise for Task 11 resolved");
    }).
         catch(function () { 
@@ -122,7 +121,7 @@ public_users.get('/books/isbn/:isbn',function (req, res) {
 // Get the book details based on author using Promises
 public_users.get('/books/author/:author',function (req, res) {
 
-    const get_books_author = new Promise((resolve, reject) => {
+    const getByAuthor = new Promise((resolve, reject) => {
 
     let booksbyauthor = [];
     let isbns = Object.keys(books);
@@ -140,7 +139,7 @@ public_users.get('/books/author/:author',function (req, res) {
         
     });
 
-    get_books_author.then(function(){
+    getByAuthor.then(function(){
             console.log("Promise for Task 12 resolved");
    }).catch(function () { 
                 console.log('Author does not exist');
@@ -150,7 +149,7 @@ public_users.get('/books/author/:author',function (req, res) {
 // Get the book details based on title using Promises
 public_users.get('/books/title/:title',function (req, res) {
 
-    const get_books_title = new Promise((resolve, reject) => {
+    const getByTitle = new Promise((resolve, reject) => {
 
     let booksbytitle = [];
     let isbns = Object.keys(books);
@@ -168,7 +167,7 @@ public_users.get('/books/title/:title',function (req, res) {
         
     });
 
-    get_books_title.then(function(){
+    getByTitle.then(function(){
             console.log("Promise for Task 13 resolved");
    }).catch(function () { 
                 console.log('Title does not exist');
