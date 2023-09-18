@@ -88,90 +88,108 @@ public_users.get('/review/:isbn',function (req, res) {
     }
 });
 
-// Get the list of books available in the shop using Promises
+// TASK 10: Get the list of books available in the shop using Promises
 public_users.get('/books',function (req, res) {
-
     const getBookList = new Promise((resolve, reject) => {
         resolve(res.send(JSON.stringify({books}, null, 4)));
       });
 
       getBookList.then(() => console.log("Promise for Task 10 resolved"));
-
 });
 
-// Get the book details based on ISBN using Promises
+// TASK 11: Get the book details based on ISBN using Promises
 public_users.get('/books/isbn/:isbn',function (req, res) {
-    const getByIsbn = new Promise((resolve, reject) => {
     const isbn = req.params.isbn;
-        if (req.params.isbn <= 10) {
-        resolve(res.send(books[isbn]));
-    }
-        else {
-            reject(res.send('ISBN not found'));
+
+    const getByIsbn = new Promise((resolve, reject) => {
+        if (books[isbn]) {
+            resolve(books[isbn]);
+        } else {
+            reject(new Error('ISBN not found'));
         }
     });
-    getByIsbn.then(function(){
+
+    getByIsbn
+        .then((book) => {
+            res.status(200).json(book);
             console.log("Promise for Task 11 resolved");
-   }).
-        catch(function () { 
-                console.log('ISBN not found');
-  });
+        })
+        .catch((error) => {
+            res.status(404).send(error.message);
+            console.log('ISBN not found');
+        });
 });
 
-// Get the book details based on author using Promises
+// TASK 12: Get the book details based on author using Promises
 public_users.get('/books/author/:author',function (req, res) {
+    const author = req.params.author;
 
     const getByAuthor = new Promise((resolve, reject) => {
+        const booksByAuthor = [];
+        const isbns = Object.keys(books);
 
-    let booksbyauthor = [];
-    let isbns = Object.keys(books);
-    isbns.forEach((isbn) => {
-      if(books[isbn]["author"] === req.params.author) {
-        booksbyauthor.push({"isbn":isbn,
-                            "title":books[isbn]["title"],
-                            "reviews":books[isbn]["reviews"]});
-      resolve(res.send(JSON.stringify({booksbyauthor}, null, 4)));
-      }
+        isbns.forEach((isbn) => {
+            if (books[isbn].author === author) {
+                booksByAuthor.push({
+                    isbn: isbn,
+                    title: books[isbn].title,
+                    reviews: books[isbn].reviews,
+                });
+            }
+        });
 
-
+        if (booksByAuthor.length > 0) {
+            resolve(booksByAuthor);
+        } else {
+            reject(new Error('Author does not exist'));
+        }
     });
-    reject(res.send("Author does not exist"))
-        
-    });
 
-    getByAuthor.then(function(){
+    getByAuthor
+        .then((books) => {
+            res.status(200).json(books);
             console.log("Promise for Task 12 resolved");
-   }).catch(function () { 
-                console.log('Author does not exist');
-  });
+        })
+        .catch((error) => {
+            res.status(404).send(error.message);
+            console.log('Author does not exist');
+        });
 });
 
-// Get the book details based on title using Promises
+// TASK 13: Get the book details based on title using Promises
 public_users.get('/books/title/:title',function (req, res) {
+    const title = req.params.title;
 
     const getByTitle = new Promise((resolve, reject) => {
+        const booksByTitle = [];
+        const isbns = Object.keys(books);
 
-    let booksbytitle = [];
-    let isbns = Object.keys(books);
-    isbns.forEach((isbn) => {
-      if(books[isbn]["title"] === req.params.title) {
-        booksbytitle.push({"isbn":isbn,
-                            "author":books[isbn]["author"],
-                            "reviews":books[isbn]["reviews"]});
-      resolve(res.send(JSON.stringify({booksbytitle}, null, 4)));
-      }
+        isbns.forEach((isbn) => {
+            if (books[isbn].title === title) {
+                booksByTitle.push({
+                    isbn: isbn,
+                    author: books[isbn].author,
+                    reviews: books[isbn].reviews,
+                });
+            }
+        });
 
-
+        if (booksByTitle.length > 0) {
+            resolve(booksByTitle);
+        } else {
+            reject(new Error('Title does not exist'));
+        }
     });
-    reject(res.send("Title does not exist"))
-        
-    });
 
-    getByTitle.then(function(){
+    getByTitle
+        .then((books) => {
+            res.status(200).json(books);
             console.log("Promise for Task 13 resolved");
-   }).catch(function () { 
-                console.log('Title does not exist');
-  });
+        })
+        .catch((error) => {
+            res.status(404).send(error.message);
+            console.log('Title does not exist');
+        });
 });
 
 module.exports.general = public_users;
