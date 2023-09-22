@@ -79,7 +79,7 @@ public_users.get('/review/:isbn',function (req, res) {
     const isbnParam = req.params.isbn;
 
     // Get the book reviews based on ISBN provided in the request parameters
-    const reviews = books[isbnParam];
+    const reviews = books[isbnParam]["reviews"];
   
     if (!reviews) {
       res.status(404).json({ message: 'No reviews found for the ISBN provided' });
