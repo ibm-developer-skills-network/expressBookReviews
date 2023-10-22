@@ -4,17 +4,16 @@ let isValid = require("./auth_users.js").isValid;
 let users = require("./auth_users.js").users;
 const public_users = express.Router();
 const axios = require('axios');
+const fs = require('fs');
 
 public_users.post("/register", (req,res) => {
   //Write your code here
   //Write the authenication mechanism here
   const username = req.body.username;
   const password = req.body.password;
-
   if(!username || !password) {
     return res.status(200).json({message: 'Username or password missing'});
   }
-
   if(isValid(username)) {
     users.push({username, password});
     return res.status(200).send('User Successfully registered.');
@@ -26,37 +25,26 @@ public_users.post("/register", (req,res) => {
 // Get the book list available in the shop
 public_users.get('/',async function (req, res) {
   //Write your code here
-  new Promise((resolve, reject) => {
-      if(books) resolve(books);
-      reject('No books found');
-    })
-    .then(response => {
-      return res.status(200).json({message: JSON.stringify(response, null, 4)});
-    })
-    .catch(err => {
-      res.status(404).json({message: err})
-    })
+
+  axios.get().then(response => {
+    if(!books) throw {message: 'no books found'}
+    return res.status(200).json(books);
+  })
+  .catch(err => {
+    return res.status(200).json(err);
+  })
+
 });
 
 // Get book details based on ISBN
 public_users.get('/isbn/:isbn',function (req, res) {
   //Write your code here
-
   const isbn = req.params.isbn;
+  let match = books[isbn];
 
-  new Promise ((resolve, reject) => {
-    let match = [];
-    for (const [key, value] of Object.entries(books)) {
-      if(value.isbn === isbn) match = value;
-    }
-    if (!match) reject({message: "No books matches this isbn"});
-    resolve(matches);
-  })
-  .then(response => {
-    return res.status(200).json(response);
-  }).catch(err => {
-    return res.status(200).json(err);
-  });
+  if (!match) return res.status(200).json(err);
+
+  return res.status(200).json(match);
  });
   
 // Get book details based on author
@@ -116,20 +104,11 @@ public_users.get('/title/:title',function (req, res) {
 public_users.get('/review/:isbn',function (req, res) {
   //Write your code here
   let isbn = req.params.isbn;
-  if(typeof isbn === 'string') {
-    isbn = isbn.replaceAll('%20', ' ')
-    isbn = isbn.replaceAll('+', ' ')
-  }
+  let match = books[isbn];
 
-  let matches = [];
-  for( const [key, value] of Object.entries(books)) {
-    if(value?.reviews?.isbn === isbn) matches.push(value);
-  }
+  if (!match) return res.status(200).json({message: "No reviews"});
 
-  if (matches.length > 0) {
-    return res.status(200).json(matches);
-  }
-  return res.status(200).json({message: "No books matches this title"});
+  return res.status(200).json(match.reviews);
 });
 
 module.exports.general = public_users;

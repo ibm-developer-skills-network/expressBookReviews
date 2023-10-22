@@ -48,23 +48,20 @@ regd_users.put("/auth/review/:isbn", (req, res) => {
 
 
   for (const [key, value] of Object.entries(books)) {
-    if(value.isbn === isbn) {
+    if(key === isbn) {
       value.reviews[username] = {review};
       return res.status(200).json({message: 'Review has been added'});
     }
   }
-
   return res.status(200).json({message: "No books matches this isbn"});
 });
 regd_users.delete("/auth/review/:isbn", (req, res) => {
   //Write your code here
   const isbn = req.params.isbn;
-  const review = req.body.review;
   const username = req.session.authorization.username
 
-
   for (const [key, value] of Object.entries(books)) {
-    if(value.isbn === isbn) {
+    if(key === isbn) {
       delete value.reviews[username]
       return res.status(200).json({message: 'Review has been deleted'});
     }
