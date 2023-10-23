@@ -27,26 +27,18 @@ const authenticatedUser = (username,password)=>{
     }
 }
 
-//only registered users can login
-regd_users.post("/login", (req,res) => {
-  return res.send("working")
-  let username = req.body.username
-  let password = req.body.password
-  if (authenticatedUser(username, password)){
-      let payload = {username, password}
-      let secretKey = "secret"
-      jwt.sign(payload, secretKey, { expiresIn: '1h' });
-
-      return res.send("User logged in")
-  }
-  else{
-      return res.send("incorrect creds")
-  }
-});
 
 // Add a book review
 regd_users.put("/auth/review/:isbn", (req, res) => {
-  //Write your code here
+  let token = req.headers.authorization
+  let username = req.query.username
+  let review = req.query.review
+  let isbn = req.params.isbn
+  
+   jwt.verify(token, "access", (err, decoded) => {
+        console.log(decoded.username)
+  })
+
   return res.status(300).json({message: "Yet to be implemented"});
 });
 

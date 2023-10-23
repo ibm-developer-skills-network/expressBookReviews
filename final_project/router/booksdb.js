@@ -3,7 +3,7 @@ let books = {
       "author": "Chinua Achebe",
       "title": "Things Fall Apart",
       "reviews": [
-        { rating: 5, comment: "A masterpiece!" },
+        { "username": "jay", "review": "A masterpiece!" },
         { rating: 4, comment: "A must-read classic" }
       ]
     },

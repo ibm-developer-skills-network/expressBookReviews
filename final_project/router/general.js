@@ -94,15 +94,15 @@ public_users.post("/login", (req, res) => {
   
     if (authenticatedUser(username, password)) {
       let payload = { username, password };
-      let secretKey = "secret";
-      const token = jwt.sign(payload, secretKey, { expiresIn: '1h' });
-  
-      return res.json({ message: "User logged in", token });
+      const token = jwt.sign(payload, "access", { expiresIn: '1h' });
+      return res.json({ message: "User logged in", "token": token});
     } else {
       return res.status(401).json({ message: "Incorrect creds" });
     }
   });
-  
-  
+
+
+
 
 module.exports.general = public_users;
+
