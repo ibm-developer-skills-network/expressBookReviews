@@ -1,24 +1,27 @@
 const express = require('express');
 let books = require("./booksdb.js");
 let isValid = require("./auth_users.js").isValid;
+let authenticatedUser = require("./auth_users.js").authenticatedUser;
 let users = require("./auth_users.js").users;
+const jwt = require('jsonwebtoken');
 const public_users = express.Router();
 
 
 public_users.post("/register", (req,res) => {
   let username = req.body.username
   let password = req.body.password
-  
+
   if (username && password){
-    let repeat_users = users.filter((user) => user.username === username)
     
-    if (repeat_users.length === 0){
-        users.push({"username": username, "password": password})  
+    if (isValid(username)){
+        users.push({"username": username, "password": password})
         return res.send(username + " Registerd")
     }
     else{
-        return res.send("user alr exists")
+        return res.send("username alr exists")
     }
+    
+    
   }
   else{
       return res.send("username or pwd not provided")
@@ -84,5 +87,22 @@ public_users.get('/review/:isbn',function (req, res) {
   }
  
 });
+
+public_users.post("/login", (req, res) => {
+    const username = req.body.username;
+    const password = req.body.password;
+  
+    if (authenticatedUser(username, password)) {
+      let payload = { username, password };
+      let secretKey = "secret";
+      const token = jwt.sign(payload, secretKey, { expiresIn: '1h' });
+  
+      return res.json({ message: "User logged in", token });
+    } else {
+      return res.status(401).json({ message: "Incorrect creds" });
+    }
+  });
+  
+  
 
 module.exports.general = public_users;
