@@ -24,13 +24,6 @@ public_users.get('/',function (req, res) {
     res.send(JSON.stringify(books,null,4));
 });
 
-public_users.get('/',function (req, res) {
-    const get_books = new Promise((resolve, reject) => {
-        resolve(res.send(JSON.stringify({books}, null, 4)));
-      });
-      get_books.then(() => console.log("Promise for Task 10 resolved"));
-});
-
 // Get book details based on ISBN
 public_users.get('/isbn/:isbn',function (req, res) {
     const isbn = req.params.isbn;
