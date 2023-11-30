@@ -60,8 +60,22 @@ public_users.get('/author/:author',function (req, res) {
 // Get all books based on title
 public_users.get('/title/:title',function (req, res) {
   //Write your code here
-  return res.status(300).json({message: "Yet to be implemented"});
+  const title = req.params.title;
+
+  const decodedTitle = title.replace(/\+/g, ' ');
+
+  const titleBooks = Object.values(books).filter(book => book.title === decodedTitle );
+
+  // Check if books with the given author are found
+  if (titleBooks.length > 0) {
+      // If found, send the book details as JSON response
+      res.status(200).json(titleBooks);
+  } else {
+      // If not found, send a 404 response with an error message
+      res.status(404).json({ message: "Books not found with the provided author" });
+  }
 });
+
 
 //  Get book review
 public_users.get('/review/:isbn',function (req, res) {
