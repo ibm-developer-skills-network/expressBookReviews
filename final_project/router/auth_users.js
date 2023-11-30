@@ -1,8 +1,11 @@
+const dotenv = require("dotenv");
+dotenv.config();
 const express = require("express");
 const jwt = require("jsonwebtoken");
 let books = require("./booksdb.js");
 const bcrypt = require("bcrypt");
 const { StatusCodes } = require("http-status-codes");
+const { TOKEN_KEY } = process.env;
 const regd_users = express.Router();
 
 let users = [];
@@ -14,8 +17,18 @@ const isValid = (username) => {
 };
 
 const authenticatedUser = (username, password) => {
+  let validUsers = users.filter(
+    (user) => user.username == username && user.password == password
+  );
+  return validUsers.length > 0 ? true : false;
   //returns boolean
   //write code to check if username and password match the one we have in records.
+};
+
+const generateAccessToken = (user) => {
+  return jwt.sign({ data: user.password }, TOKEN_KEY, {
+    expiresIn: 60 * 60,
+  });
 };
 
 //only registered users can login
@@ -25,23 +38,27 @@ regd_users.post("/login", async (req, res) => {
   // check for username and password filling
   if (!(username && password)) {
     return res
-      .status(StatusCodes.BAD_REQUEST)
-      .json({ msg: "Invalid credentials" });
-  }
-
-  const user = users.find((user) => user.username == username);
-  if (!user) {
-    return res
       .status(StatusCodes.NOT_FOUND)
-      .json({ msg: "username not found" });
+      .json({ msg: "please provide all credentials" });
   }
+  if (authenticatedUser(username, password)) {
+    const user = users.find((user) => user.username == username);
+    let accessToken = generateAccessToken(user);
+    let sessionData = {username, accessToken};
+    req.session.authorization = sessionData;
+    res.status(StatusCodes.OK).json({
+      msg: "successfully logged in ",
+      username, 
+      accessToken
 
+    });
+  }
   // check for password
-
-  return user.password == password
-    ? res.status(StatusCodes.OK).json({ msg: "login successful" })
-    : res.status(StatusCodes.BAD_REQUEST).json({ msg: "invalid credentials" });
-
+  else {
+    res
+      .status(StatusCodes.BAD_REQUEST)
+      .json({ msg: "invalid username or password" });
+  }
   //
 });
 
