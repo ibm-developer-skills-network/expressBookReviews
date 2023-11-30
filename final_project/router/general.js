@@ -4,32 +4,38 @@ let isValid = require("./auth_users.js").isValid;
 let users = require("./auth_users.js").users;
 const public_users = express.Router();
 const { StatusCodes } = require("http-status-codes");
-const bcrypt = require("bcrypt");
 
-public_users.post("/register", async (req, res) => {
+public_users.post("/register", (req, res) => {
   const { username, password } = req.body;
-  if (!(username  && password)) {
-    res
+
+  if (!(username && password)) {
+    return res
       .status(StatusCodes.BAD_REQUEST)
       .json({ msg: "please provide all credentials" });
   }
 
+  if (!isValid(username)) {
+    return res
+      .status(StatusCodes.BAD_REQUEST)
+      .json({ msg: "username invalid" });
+  }
+
   // check for duplicate
-  const existingUser = users.filter((user) => user.username == username);
-  if (existingUser.length > 0) {
+  const doesExist = users.some((user) => user.username == username);
+  if (doesExist) {
     return res
       .status(StatusCodes.CONFLICT)
       .json({ msg: `the user with username ${username} already exists!!` });
   }
-  // hashing the password
-  const hashedPassword = await bcrypt.hash(password, 10);
   const newUser = {
     username,
-    password: hashedPassword,
+    password,
   };
   users.push(newUser);
   console.log(users);
-  return res.status(StatusCodes.CREATED).json({ message: "user succceffully registered" });
+  return res
+    .status(StatusCodes.CREATED)
+    .json({ message: "user succceffully registered" });
 });
 
 // Get the book list available in the shop

@@ -28,30 +28,21 @@ regd_users.post("/login", async (req, res) => {
       .status(StatusCodes.BAD_REQUEST)
       .json({ msg: "Invalid credentials" });
   }
-  // check for username validity before password check
-  if (!isValid(username)) {
-    return res
-      .status(StatusCodes.BAD_REQUEST)
-      .json({ msg: "invalid username" });
-  }
 
   const user = users.find((user) => user.username == username);
-  const { password: hashedPassword } = user;
-
-  // check for password mismatch
-  try {
-    const isMatched = await bcrypt.compare(password, hashedPassword);
-    if (isMatched) {
-      res.status(StatusCodes.OK).json({ msg: "login successful" });
-    }
-  } catch (error) {
-    res
-      .status(StatusCodes.BAD_REQUEST)
-      .json({ msg: "invalid username or password" });
+  if (!user) {
+    return res
+      .status(StatusCodes.NOT_FOUND)
+      .json({ msg: "username not found" });
   }
 
+  // check for password
+
+  return user.password == password
+    ? res.status(StatusCodes.OK).json({ msg: "login successful" })
+    : res.status(StatusCodes.BAD_REQUEST).json({ msg: "invalid credentials" });
+
   //
-  return res.status(300).json({ message: "Yet to be implemented" });
 });
 
 // Add a book review
