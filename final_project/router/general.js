@@ -1,3 +1,6 @@
+//This contains the skeletal implementations for the routes which a general user can access.
+
+
 const express = require('express');
 let books = require("./booksdb.js");
 let isValid = require("./auth_users.js").isValid;
@@ -10,11 +13,14 @@ public_users.post("/register", (req,res) => {
   return res.status(300).json({message: "Yet to be implemented"});
 });
 
+
 // Get the book list available in the shop
-public_users.get('/',function (req, res) {
+  public_users.get('/',function (req, res) {
+
   //Write your code here
-  return res.status(300).json({message: "Yet to be implemented"});
+  res.send(JSON.stringify({books},null,4));
 });
+
 
 // Get book details based on ISBN
 public_users.get('/isbn/:isbn',function (req, res) {
