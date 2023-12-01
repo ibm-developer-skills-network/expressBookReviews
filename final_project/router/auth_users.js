@@ -26,7 +26,7 @@ const authenticatedUser = (username, password) => {
 };
 
 const generateAccessToken = (user) => {
-  return jwt.sign({ data: user.password }, TOKEN_KEY, {
+  return jwt.sign({ username: user.username }, TOKEN_KEY, {
     expiresIn: 60 * 60,
   });
 };
@@ -44,13 +44,12 @@ regd_users.post("/login", async (req, res) => {
   if (authenticatedUser(username, password)) {
     const user = users.find((user) => user.username == username);
     let accessToken = generateAccessToken(user);
-    let sessionData = {username, accessToken};
+    let sessionData = { username, accessToken };
     req.session.authorization = sessionData;
     res.status(StatusCodes.OK).json({
       msg: "successfully logged in ",
-      username, 
-      accessToken
-
+      username,
+      accessToken,
     });
   }
   // check for password
@@ -64,8 +63,52 @@ regd_users.post("/login", async (req, res) => {
 
 // Add a book review
 regd_users.put("/auth/review/:isbn", (req, res) => {
-  //Write your code here
-  return res.status(300).json({ message: "Yet to be implemented" });
+  const { username } = req.session.authorization;
+  const { isbn } = req.params;
+  const book = books[isbn];
+  if (!book) {
+    return res
+      .status(StatusCodes.NOT_FOUND)
+      .json({ msg: `book with ISBN ${isbn} not found` });
+  } else {
+    // use 'reviews' keyword in the body while making a request
+    const { reviews } = req.body;
+    if (!reviews) {
+      return res
+        .status(StatusCodes.BAD_REQUEST)
+        .json({ msg: "please provide  reviews" });
+    }
+    book.reviews[username] = reviews;
+    res
+      .status(StatusCodes.CREATED)
+      .json({ msg: `review added successfully for user ${username}`, book });
+  }
+});
+regd_users.delete("/auth/review/:isbn", (req, res) => {
+  const { username } = req.session.authorization;
+  const { isbn } = req.params;
+  const book = books[isbn];
+  if (!book) {
+    return res
+      .status(StatusCodes.NOT_FOUND)
+      .json({ msg: `book with ISBN ${isbn} not found` });
+  } else {
+    const review = book.reviews[username];
+    console.log(review);
+    if (review) {
+      delete book.reviews[username];
+      return res
+        .status(StatusCodes.OK)
+        .json({
+          msg: `review deleted successfully for user ${username}`,
+          book,
+        });
+    } else {
+      return res
+        .status(StatusCodes.NOT_FOUND)
+        .json({ msg: "no reviews found" });
+    }
+  }
 });
 
 module.exports.authenticated = regd_users;
