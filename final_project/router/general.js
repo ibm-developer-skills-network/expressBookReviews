@@ -21,6 +21,9 @@ public_users.post('/register', (req, res) => {
   //Write your code here
   const username = req.body.username;
   const password = req.body.password;
+  if (!username || !password) {
+    return res.status(404).json({ message: 'Missing Credentials' });
+  }
 
   if (username && password) {
     if (!doesExist(username)) {
@@ -31,10 +34,11 @@ public_users.post('/register', (req, res) => {
     } else {
       return res.status(404).json({ message: 'User already exists!' });
     }
-  }else{
-    return res.status(404).json({message: "Please provide username and password"})
   }
-  // return res.status(404).json({ message: 'Unable to register user.' });
+  // }else{
+  //   return res.status(404).json({message: "Please provide username and password"})
+  // }
+  return res.status(404).json({ message: 'Unable to register user.' });
 });
 
 // Get the book list available in the shop
