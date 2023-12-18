@@ -2,9 +2,12 @@ const express = require('express');
 const { v4: uuidv4 } = require('uuid');
 const jwt = require('jsonwebtoken');
 let books = require('./booksdb.js');
+const { addOrUpdateReview } = require('../utils/addOrUpdateReview.js');
+const { deleteReview } = require('../utils/deleteReview.js');
+let findBookByISBN = require('../utils/findBookByISBN.js').findBookByISBN;
 const regd_users = express.Router();
 
-let users = [];
+let users = [{ username: 'Hiran', password: '1234' }];
 
 const isValid = (username) => {
   //returns boolean
@@ -49,6 +52,7 @@ regd_users.post('/login', (req, res) => {
       accessToken,
       username,
     };
+    console.log(`Username: ${username} has logged In!`);
     return res.status(200).send('User successfully logged in');
   } else {
     return res
@@ -60,46 +64,54 @@ regd_users.post('/login', (req, res) => {
 // Add a book review
 regd_users.put('/auth/review/:isbn', (req, res) => {
   //Write your code here
-  let curUser = req.session.authorization.username
-  console.log(req.session.authorization.username);
+  // Get the current user
+  let curUser = req.session.authorization.username;
+  // Get the review from body
   let userReview = req.body.review;
+  // get the isbn from the request params
   let isbn = req.params.isbn;
+
   // let booksArr = Object.keys(books).map((key) => books[key]);
   // let isbnBook = booksArr.filter((book) => book.isbn === isbn);
-  let isbnBook = null;
-  for (let bookId in books) {
-    if (books.hasOwnProperty(bookId)) {
-      let book = books[bookId];
-      if (book.isbn === isbn) {
-        console.log(book);
-        isbnBook = book;
-        if(book.reviews.length > 0){
 
-        }else{
-          let newId = uuidv4();
-          // let review = {
-          //   reviewId: newId,
-          //   review: userReview,
-          //   username: curUser
-          // }
-          book.reviews = {
-            reviewId: newId,
-            review: userReview,
-            username: curUser
-          }
-        }
-      }
-    }
-    if (isbnBook !== null) {
-      return res
-        .status(200)
-        .json({ message: req.session.authorization.username, books: books});
-    } else {
-      return res
-        .status(404)
-        .json({ message: 'No book with ' + isbn + ' found!' });
-    }
+  // loop in books to search for the book and append review
+  let book = findBookByISBN(isbn);
+  if (book !== null) {
+    console.log(book);
+    addOrUpdateReview(book, curUser, userReview);
+    res.send(books);
+  } else {
+    console.log('no such book found');
+    res.status(404).json({ message: `No books with ${isbn} was found!` });
   }
+});
+
+regd_users.delete('/auth/review/:isbn', (req, res) => {
+  let curUser = req.session.authorization.username;
+  console.log(curUser)
+  // get the isbn from the request params
+  let isbn = req.params.isbn;
+
+
+  // loop in books to search for the book and delete review
+  let book = findBookByISBN(isbn);
+
+
+   
+    const reviews = book.reviews;
+    console.log(reviews)
+    // Check if the user has a review
+    if (reviews.hasOwnProperty(curUser)) {
+      console.log(`Deleting review for User ${curUser}`);
+      delete reviews[curUser];
+    } else {
+      console.log(`No review found for User ${curUser}`);
+    }
+
+    // Output the updated book object
+    console.log(books);
+    res.status(304).json({"message": "Review deleted"})
+  
 });
 
 module.exports.authenticated = regd_users;
