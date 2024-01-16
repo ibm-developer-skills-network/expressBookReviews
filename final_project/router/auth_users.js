@@ -65,3 +65,7 @@ regd_users.post("/login", (req, res) => {
       return res.status(404).json({ message: `ISBN ${isbn} not found` });
     }
   });
+
+module.exports.authenticated = regd_users;
+module.exports.isValid = isValid;
+module.exports.users = users;
