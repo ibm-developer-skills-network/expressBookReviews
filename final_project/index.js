@@ -1,22 +1,53 @@
-const express = require('express');
 const jwt = require('jsonwebtoken');
-const session = require('express-session')
+const session = require('express-session');
+const express = require('express');
+const cors = require('cors');
 const customer_routes = require('./router/auth_users.js').authenticated;
+const { authenticated, isValid, users } = require('./router/auth_users');
 const genl_routes = require('./router/general.js').general;
 
 const app = express();
 
 app.use(express.json());
+app.use(cors());
 
-app.use("/customer",session({secret:"fingerprint_customer",resave: true, saveUninitialized: true}))
+// Set up express-session
+app.use(session({
+  secret: 'your-secret-key',
+  resave: true,
+  saveUninitialized: true,
+}));
 
-app.use("/customer/auth/*", function auth(req,res,next){
-//Write the authenication mechanism here
+// Use your authenticated router
+app.use('/customer/auth', authenticated);
+
+// Authentication middleware
+app.use("/customer/auth/*", function auth(req, res, next) {
+  if (req.session.authorization) {
+    const token = req.session.authorization['accessToken'];
+    jwt.verify(token, "access", (err, user) => {
+      if (!err) {
+        req.user = user;
+        console.log("Token Verified. User:", user);
+        next();
+      } else {
+        console.error("Token Verification Error:", err);
+        res.status(403).json({ message: "User not authenticated" });
+      }
+    });
+  } else {
+    return res.status(403).json({ message: "User not logged in" });
+  }
 });
- 
-const PORT =5000;
 
-app.use("/customer", customer_routes);
-app.use("/", genl_routes);
+// Use authenticated routes
+app.use("/customer/auth", customer_routes);
 
-app.listen(PORT,()=>console.log("Server is running"));
+// Use general routes
+app.use("/customer/general", genl_routes);
+
+const PORT = 5001;
+
+app.listen(PORT, () => {
+  console.log(`Server is running on port ${PORT}`);
+});

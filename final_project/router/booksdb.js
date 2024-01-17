@@ -10,5 +10,9 @@ let books = {
       9: {"author": "Honor\u00e9 de Balzac","title": "Le P\u00e8re Goriot", "reviews": {} },
       10: {"author": "Samuel Beckett","title": "Molloy, Malone Dies, The Unnamable, the trilogy", "reviews": {} }
 }
+// Retrieve the book with ISBN 1
+const bookWithISBN1 = books[1]; 
+
 
 module.exports=books;
+
