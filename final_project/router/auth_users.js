@@ -31,38 +31,38 @@ regd_users.post("/login", (req, res) => {
       req.session.authorization = {
         accessToken, username_input
       }
-      return res.status(200).send("User logged in successfully");      
+      return res.status(200).json({message: `User ${username_input} logged in successfully`});      
     }
     else {
       return res.status(208).json({ message: "Invalid cridentials. Check Username or Password" });
     }
   });
 
-  regd_users.put("/auth/review/:isbn", (req, res) => {
-    const isbn = req.params.isbn;
+  regd_users.put("/auth/review/:id", (req, res) => {
+    const id = req.params.id;
     const review_input = req.body.review;
     const username_status = req.session.authorization.username;
     console.log("add review: ", req.params, req.body, req.session);
-    if (books[isbn]) {
-      let book_target = books[isbn];
+    if (books[id]) {
+      let book_target = books[id];
       book_target.reviews[username_status] = review_input;
-      return res.status(200).send(`The review of ISBN ${isbn} has been added/modified`);
+      return res.status(200).json({message:`The review of ID ${id} has been added/modified`});
     }
     else {
-      return res.status(404).json({ message: `ISBN ${isbn} not found` });
+      return res.status(404).json({ message: `ID ${id} not found` });
     }
   });
   
-  regd_users.delete("/auth/review/:isbn", (req, res) => {
-    const isbn = req.params.isbn;
+  regd_users.delete("/auth/review/:id", (req, res) => {
+    const id = req.params.id;
     const username_status = req.session.authorization.username;
-    if (books[isbn]) {
-      let book = books[isbn];
+    if (books[id]) {
+      let book = books[id];
       delete book.reviews[username_status];
-      return res.status(200).send(`Review for book with ISBN ${isbn} has been deleted`);
+      return res.status(200).send(`Review for book with ID ${id} has been deleted`);
     }
     else {
-      return res.status(404).json({ message: `ISBN ${isbn} not found` });
+      return res.status(404).json({ message: `ID ${id} not found` });
     }
   });
 
