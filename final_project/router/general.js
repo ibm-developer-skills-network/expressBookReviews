@@ -6,32 +6,58 @@ const public_users = express.Router();
 
 
 public_users.post("/register", (req,res) => {
-  //Write your code here
+  
   return res.status(300).json({message: "Yet to be implemented"});
 });
 
 // Get the book list available in the shop
 public_users.get('/',function (req, res) {
-  //Write your code here
+    res.send(JSON.stringify(books,null,4));
   return res.status(300).json({message: "Yet to be implemented"});
 });
 
 // Get book details based on ISBN
 public_users.get('/isbn/:isbn',function (req, res) {
-  //Write your code here
-  return res.status(300).json({message: "Yet to be implemented"});
- });
-  
+    
+  const isbn = req.params.isbn;
+  const bookDetails = books[isbn];
+
+  if (bookDetails) {
+    res.send(bookDetails);
+  } else {
+    res.status(404).send('Book not found');
+  }
+});
+
 // Get book details based on author
 public_users.get('/author/:author',function (req, res) {
-  //Write your code here
-  return res.status(300).json({message: "Yet to be implemented"});
+   
+    const author = req.params.author;
+    const booksByAuthor = [];
+  
+    Object.keys(books).forEach((book) => {
+      if (books[book].author === author) {
+        booksByAuthor.push(books[book]);
+      }
+    });
+  
+    res.send(booksByAuthor);
+ 
+ // return res.status(300).json({message: "Yet to be implemented"});
 });
 
 // Get all books based on title
 public_users.get('/title/:title',function (req, res) {
-  //Write your code here
-  return res.status(300).json({message: "Yet to be implemented"});
+    const title = req.params.title;
+    const booksByTitle = [];
+  
+    Object.keys(books).forEach((book) => {
+      if (books[book].title === title) {
+        booksByTitle.push(books[book]);
+      }
+    }); 
+    res.send(booksByTitle);
+  //return res.status(300).json({message: "Yet to be implemented"});
 });
 
 //  Get book review
