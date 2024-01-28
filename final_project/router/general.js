@@ -1,7 +1,7 @@
 const express = require('express');
 let books = require("./booksdb.js");
 let isValid = require("./auth_users.js").isValid;
-let userExists = require("./auth_users.js").userExists;
+let authenticatedUser = require("./auth_users.js").authenticatedUser;
 let users = require("./auth_users.js").users;
 const public_users = express.Router();
 
@@ -12,7 +12,7 @@ public_users.post("/register", (req,res) => {
   const password = req.body.password;
 
   if (username && password) {
-    if (!userExists(username)) { 
+    if (!authenticatedUser(username)) { 
       users.push({"username":username,"password":password});
       return res.status(200).json({message: "User successfully registered. Now you can login"});
     } else {
@@ -20,8 +20,7 @@ public_users.post("/register", (req,res) => {
     }
   } 
   return res.status(404).json({message: "Unable to register user."});
-  //let msg = {"user": username, "psw": password};
-  //return res.send(JSON.stringify(msg,null,4));
+
 });
 
 // Get the book list available in the shop

@@ -16,17 +16,6 @@ const isValid = (username)=>{ //returns boolean
   }
 }
 
-const userExists = (username)=>{ //returns boolean
-  let userswithsamename = users.filter((user)=>{
-    return user.username === username
-  });
-  if(userswithsamename.length > 0){
-    return true;
-  } else {
-    return false;
-  }
-}
-
 const authenticatedUser = (username,password)=>{ //returns boolean
 //write code to check if username and password match the one we have in records.
 
@@ -64,19 +53,36 @@ regd_users.post("/login", (req,res) => {
       return res.status(208).json({message: "Invalid Login. Check username and password"});
     }
 
-  //Write your code here
-  //return res.status(300).json({message: "Yet to be implemented"});
-
 });
 
 // Add a book review
 regd_users.put("/auth/review/:isbn", (req, res) => {
-  //Write your code here
-  return res.status(300).json({message: "Yet to be implemented"});
+
+  let isbn = req.params.isbn;
+  let reviews = books[isbn].reviews;
+
+  const username = req.session.authorization.username;
+  let review = req.body.review;
+  reviews[username] = review;
+  return res.status(200).json({message: "Review added/updated"});
+
+});
+
+// Delete a book review
+regd_users.delete("/auth/review/:isbn", (req, res) => {
+
+  let isbn = req.params.isbn;
+  let reviews = books[isbn].reviews;
+  const username = req.session.authorization.username;
+  if (reviews[username]) {
+    reviews[username] = {};
+  }
+  return res.status(200).json({message: "Review deleted"});
+
 });
 
 module.exports.authenticated = regd_users;
 module.exports.isValid = isValid;
-module.exports.userExists = userExists;
+module.exports.authenticatedUser = authenticatedUser;
 
 module.exports.users = users;
