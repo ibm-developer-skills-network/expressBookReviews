@@ -4,7 +4,7 @@ let isValid = require("./auth_users.js").isValid;
 let authenticatedUser = require("./auth_users.js").authenticatedUser;
 let users = require("./auth_users.js").users;
 const public_users = express.Router();
-
+const axios = require('axios').default;
 
 public_users.post("/register", (req,res) => {
 
