@@ -4,7 +4,6 @@ let isValid = require("./auth_users.js").isValid;
 let authenticatedUser = require("./auth_users.js").authenticatedUser;
 let users = require("./auth_users.js").users;
 const public_users = express.Router();
-const axios = require('axios').default;
 
 public_users.post("/register", (req,res) => {
 
@@ -23,48 +22,53 @@ public_users.post("/register", (req,res) => {
 
 });
 
-function getBooks() {
-  return new Promise((resolve, reject) => {
-      
-      resolve(JSON.stringify(books,null,4));
- 
-  });
-}
-
 // Get the book list available in the shop
 public_users.get('/',async function (req, res) {
 
-  const allBooks = await getBooks();
-  res.send(allBooks);
-  //res.send(JSON.stringify(books,null,4));
+  let allBooks = {};
+  const promise = new Promise((resolve, reject) => {
 
+    let allBooks = JSON.stringify(books,null,4);
+    resolve(allBooks);
+  });
+
+  promise.then((allBooks) => { res.send(allBooks); });       
+ 
 });
 
 // Get book details based on ISBN
-public_users.get('/isbn/:isbn',function (req, res) {
+public_users.get('/isbn/:isbn',async function (req, res) {
 
   let isbn = req.params.isbn;
-  let bookMatchingIsbn = books[isbn];
+
+  resolve( books[isbn]);
+
+  let bookMatchingIsbn = await getBooksByISBN(isbn);
   res.send(bookMatchingIsbn);
 
 });
   
 // Get book details based on author
-public_users.get('/author/:author',function (req, res) {
+public_users.get('/author/:author',async function (req, res) {
 
   let author = req.params.author;
   let authorBooks = [];
-  let isbn = 1;
 
-  while (books[isbn]) {
-    if (books[isbn].author == author) {
-      let book = {"isbn": isbn, "author": books[isbn].author, "title": books[isbn].title, "reviews": books[isbn].reviews};
-      authorBooks.push(book);
-    }
-    isbn++;
-  }
+  const promise = new Promise((resolve, reject) => {     
 
-  res.send(authorBooks);
+       let isbn = 1;
+   
+       while (books[isbn]) {
+         if (books[isbn].author == author) {
+           let book = {"isbn": isbn, "author": books[isbn].author, "title": books[isbn].title, "reviews": books[isbn].reviews};
+           authorBooks.push(book);
+         }
+         isbn++;
+       }
+       resolve(authorBooks);
+      });
+
+  promise.then((authorBooks) => { res.send(authorBooks); });       
 
 });
 
@@ -73,17 +77,23 @@ public_users.get('/title/:title',function (req, res) {
 
   let title = req.params.title;
   let titleBooks = [];
-  let isbn = 1;
 
-  while (books[isbn]) {
-    if (books[isbn].title == title) {
-      let book = {"isbn": isbn, "author": books[isbn].author, "title": books[isbn].title, "reviews": books[isbn].reviews};
-      titleBooks.push(book);
+  const promise = new Promise((resolve, reject) => {
+
+    let isbn = 1;
+
+    while (books[isbn]) {
+      if (books[isbn].title == title) {
+        let book = {"isbn": isbn, "author": books[isbn].author, "title": books[isbn].title, "reviews": books[isbn].reviews};
+        titleBooks.push(book);
+      }
+      isbn++;
     }
-    isbn++;
-  }
 
-  res.send(titleBooks);
+    resolve(titleBooks);
+  });
+
+  promise.then((titleBooks) => { res.send(titleBooks); });  
 
 });
 
@@ -91,11 +101,17 @@ public_users.get('/title/:title',function (req, res) {
 public_users.get('/review/:isbn',function (req, res) {
 
   let isbn = req.params.isbn;
+  let reviews = {};
+
+  const promise = new Promise((resolve, reject) => {
   if (books[isbn]) {
     let reviews = books[isbn].reviews;
-    res.send(reviews);
+    resolve(reviews);
   }
+});
   
+  promise.then((reviews) => { res.send(reviews); });  
+
 });
 
 module.exports.general = public_users;
