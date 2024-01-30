@@ -52,10 +52,24 @@ regd_users.post("/login", (req,res) => {
 
 // Add a book review
 regd_users.put("/auth/review/:isbn", (req, res) => {
-  //Write your code here
-  return res.status(300).json({message: "Yet to be implemented"});
+  const isbn = req.params.isbn;
+  const review = req.params.review;
+  if(isbn)
+  {
+    books[req.params.isbn]={
+        "reviews": review,
+    }
+  }
+  res.send("The review for the book with ISBN" + (' ')+ (req.params.isbn) + " Has been added!");
 });
-
+regd_users.delete("/auth/review/:isbn", (req, res) => {
+    const isbn = req.params.isbn;
+    if (isbn){
+        delete books[isbn]
+    }
+    res.send(`books with the isbn  ${isbn} deleted.`);
+   
+  });
 module.exports.authenticated = regd_users;
 module.exports.isValid = isValid;
 module.exports.users = users;
