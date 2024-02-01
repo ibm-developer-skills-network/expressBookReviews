@@ -128,7 +128,18 @@ function getBookList(){
       resolve(output);  
     })
   }
-  
+   function getFromTitle(title){
+    let output = [];
+    return new Promise((resolve,reject)=>{
+      for (var isbn in books) {
+        let book_ = books[isbn];
+        if (book_.title === title){
+          output.push(book_);
+        }
+      }
+      resolve(output);  
+    })
+  }
   // Get book details based on author
   public_users.get('/author/:author',function (req, res) {
     const author = req.params.author;
@@ -140,4 +151,12 @@ function getBookList(){
   
   // Task 13
   // Add the code for getting the book details based on Title (done in Task 4) using Promise callbacks or async-await with Axios.
+public_users.get('/title/:title',function (req, res) {
+    const title = req.params.title;
+    getFromTitle(title)
+    .then(
+      result =>res.send(JSON.stringify(result, null, 4))
+    );
+  });
+
 module.exports.general = public_users;
