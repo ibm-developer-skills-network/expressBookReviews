@@ -67,8 +67,7 @@ regd_users.delete("/auth/review/:isbn", (req, res) => {
     if (isbn){
         delete books[isbn]
     }
-    res.send(`books with the isbn  ${isbn} deleted.`);
-   
+    res.send(`books with the isbn  ${isbn} deleted.`);   
   });
 module.exports.authenticated = regd_users;
 module.exports.isValid = isValid;
