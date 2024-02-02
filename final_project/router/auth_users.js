@@ -43,7 +43,7 @@ regd_users.post("/login", (req,res) => {
     if (authenticatedUser(username, password)) {
         let accessToken = jwt.sign({
             data: password
-        }, "access", {expiresIn: 60*60});
+        }, "access", {expiresIn: "1h"});
         req.session.auth = {
             accessToken, username
         }
@@ -70,6 +70,22 @@ regd_users.put("/auth/review/:isbn", (req, res) => {
     res.status(200).json({"message" : `Successfully added review for ${book.title} by ${book.author}: ${review}`});
 });
 
+regd_users.delete("/auth/review/:isbn", (req, res) => {
+    const user = req.session.auth.username;
+    const isbn = req.params.isbn;
+
+    if (!(isbn in books)) {
+        return res.status(404).json({"message": `ISBN ${isbn} not found in our collection of books.`});
+    }
+    const book = books[isbn];
+    if (books[isbn].reviews[user]) {
+        delete books[isbn].reviews[user];
+        res.status(200).json({"message" : `Successfully deleted ${user}'s review for ${book.title} by ${book.author}`});
+    } else {
+        return res.status(404).json({"message": `${user}'s review not found in our collection of reviews for ${book.title} by ${book.author}`});
+    }
+
+});
 module.exports.authenticated = regd_users;
 module.exports.isValid = isValid;
 module.exports.users = users;
