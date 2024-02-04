@@ -25,40 +25,68 @@ public_users.post("/register", (req,res) => {
 
 
 // Get the book list available in the shop
-public_users.get('/',function (req, res) {
-    res.send(JSON.stringify(books, null, 4));
+// public_users.get('/',function (req, res) {
+//     res.send(JSON.stringify(books, null, 4));
+// });
+
+public_users.get('/', async function (req, res) {
+    const response = await JSON.stringify(books, null, 4);
+    try {
+        res.send(response);
+    } catch (error) {
+        console.error('Error fetching data:', error.message);
+        res.status(500).send('Internal Server Error');
+    }
 });
 
 // Get book details based on ISBN
-public_users.get('/isbn/:isbn',function (req, res) {
+public_users.get('/isbn/:isbn', async function (req, res) {
     const isbn = req.params.isbn;
-    res.send(books[isbn]);
- });
+    if (!(isbn in books)) {
+        return res.status(404).json({"message": `ISBN ${isbn} not found in our collection of books.`});
+    }
+    try {
+        res.send(books[isbn]);
+    } catch (error) {
+        console.error('Error fetching data:', error.message);
+        res.status(500).send('Internal Server Error');
+    }
+});
   
 // Get book details based on author
-public_users.get('/author/:author',function (req, res) {
-    const author = req.params.author;
-    let booksWithAuthor = {};
-    for (let isbn = 1; isbn <= Object.keys(books).length; isbn++) {
-        let currBook = books[isbn];
-        if (currBook.author === author) {
-            booksWithAuthor[isbn] = currBook;
+public_users.get('/author/:author', async function (req, res) {
+    try {
+        const author = req.params.author;
+        let booksWithAuthor = {};
+        for (let isbn = 1; isbn <= Object.keys(books).length; isbn++) {
+            let currBook = books[isbn];
+            if (currBook.author === author) {
+                booksWithAuthor[isbn] = currBook;
+            }
         }
+        res.send(JSON.stringify(booksWithAuthor, null, 4));
+    } catch (error) {
+        console.error('Error fetching data:', error.message);
+        res.status(500).send('Internal Server Error');
     }
-    res.send(JSON.stringify(booksWithAuthor, null, 4));
 });
 
 // Get all books based on title
-public_users.get('/title/:title',function (req, res) {
-    const title = req.params.title;
-    let booksWithTitle = {};
-    for (let isbn = 1; isbn <= Object.keys(books).length; isbn++) {
-        let currBook = books[isbn];
-        if (currBook.title === title) {
-            booksWithTitle[isbn] = currBook;
+public_users.get('/title/:title', async function (req, res) {
+    try {
+        const title = req.params.title;
+        let booksWithTitle = {};
+        for (let isbn = 1; isbn <= Object.keys(books).length; isbn++) {
+            let currBook = books[isbn];
+            if (currBook.title === title) {
+                booksWithTitle[isbn] = currBook;
+            }
         }
+        res.send(JSON.stringify(booksWithTitle, null, 4));
+    } catch (error) {
+        console.error('Error fetching data:', error.message);
+        res.status(500).send('Internal Server Error');
     }
-    res.send(JSON.stringify(booksWithTitle, null, 4));
 });
 
 //  Get book review
