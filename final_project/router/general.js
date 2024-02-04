@@ -3,6 +3,9 @@ let books = require("./booksdb.js");
 let isValid = require("./auth_users.js").isValid;
 let users = require("./auth_users.js").users;
 const public_users = express.Router();
+const axios = require('axios');
+const fs = require('fs').promises;
+const path = require('path');
 
 public_users.post("/register", (req,res) => {
     const username = req.body.username;
@@ -30,9 +33,11 @@ public_users.post("/register", (req,res) => {
 // });
 
 public_users.get('/', async function (req, res) {
-    const response = await JSON.stringify(books, null, 4);
-    try {
-        res.send(response);
+    const filePath = path.join(__dirname, 'asyncbooksdb.json');
+    try { 
+        const fileContent = await fs.readFile(filePath, 'utf-8');
+        const books = JSON.parse(fileContent).books;
+        res.send(JSON.stringify(books, null, 4));
     } catch (error) {
         console.error('Error fetching data:', error.message);
         res.status(500).send('Internal Server Error');
@@ -42,11 +47,12 @@ public_users.get('/', async function (req, res) {
 // Get book details based on ISBN
 public_users.get('/isbn/:isbn', async function (req, res) {
     const isbn = req.params.isbn;
-    if (!(isbn in books)) {
-        return res.status(404).json({"message": `ISBN ${isbn} not found in our collection of books.`});
-    }
-    try {
-        res.send(books[isbn]);
+    const filePath = path.join(__dirname, 'asyncbooksdb.json');
+    try { 
+        const fileContent = await fs.readFile(filePath, 'utf-8');
+        const books = JSON.parse(fileContent).books;
+        const bookWithISBN = books.filter(book => book.isbn === isbn);
+        res.send(JSON.stringify(bookWithISBN));
     } catch (error) {
         console.error('Error fetching data:', error.message);
         res.status(500).send('Internal Server Error');
@@ -55,16 +61,13 @@ public_users.get('/isbn/:isbn', async function (req, res) {
   
 // Get book details based on author
 public_users.get('/author/:author', async function (req, res) {
-    try {
-        const author = req.params.author;
-        let booksWithAuthor = {};
-        for (let isbn = 1; isbn <= Object.keys(books).length; isbn++) {
-            let currBook = books[isbn];
-            if (currBook.author === author) {
-                booksWithAuthor[isbn] = currBook;
-            }
-        }
-        res.send(JSON.stringify(booksWithAuthor, null, 4));
+    const author = req.params.author;
+    const filePath = path.join(__dirname, 'asyncbooksdb.json');
+    try { 
+        const fileContent = await fs.readFile(filePath, 'utf-8');
+        const books = JSON.parse(fileContent).books;
+        const booksWithAuthor = books.filter(book => book.author === author);
+        res.send(JSON.stringify(booksWithAuthor));
     } catch (error) {
         console.error('Error fetching data:', error.message);
         res.status(500).send('Internal Server Error');
@@ -73,16 +76,13 @@ public_users.get('/author/:author', async function (req, res) {
 
 // Get all books based on title
 public_users.get('/title/:title', async function (req, res) {
-    try {
-        const title = req.params.title;
-        let booksWithTitle = {};
-        for (let isbn = 1; isbn <= Object.keys(books).length; isbn++) {
-            let currBook = books[isbn];
-            if (currBook.title === title) {
-                booksWithTitle[isbn] = currBook;
-            }
-        }
-        res.send(JSON.stringify(booksWithTitle, null, 4));
+    const title = req.params.title;
+    const filePath = path.join(__dirname, 'asyncbooksdb.json');
+    try { 
+        const fileContent = await fs.readFile(filePath, 'utf-8');
+        const books = JSON.parse(fileContent).books;
+        const booksWithTitle = books.filter(book => book.title === title);
+        res.send(JSON.stringify(booksWithTitle));
     } catch (error) {
         console.error('Error fetching data:', error.message);
         res.status(500).send('Internal Server Error');
