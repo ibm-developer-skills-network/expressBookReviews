@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Book Application</title>
+    <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+    <form action="/" method="get" class="search">
+        <input type="text" name="query" placeholder="Search..." required>
+        <button type="submit">Submit</button>
+        <a href="/signin">Account</a>
+    </form>
+    <div class="books">
+        <% books.forEach(function(book) { %>
+            <div class="book">
+                <p class="author"><%= book.author %></p>
+                <p class="title"><%= book.title %></p>
+                <a href="/review/<%= book.isbn %>">Reviews</a>
+            </div>
+        <% }) %>
+    </div>
+</body>
+</html>

@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= book.title %> | Reviews</title>
+    <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+    <form action="/review/<%= book.isbn %>/add" method="post" class="search">
+        <input type="text" name="newReview" placeholder="Add review..." required>
+        <button type="submit">Submit</button>
+    </form>
+    <div class="books">
+        <% book.reviews.forEach(function(review, index) { %>
+            <div class="book review">
+                <div class="flex">
+                    <p><%= review %></p>
+                    <form action="/review/<%= book.isbn %>/delete" method="post">
+                        <input type="hidden" name="reviewIndex" value="<%= index %>">
+                        <button type="submit">Delete</button>
+                    </form>
+                </div>
+                <form action="/review/<%= book.isbn %>/edit" method="post" class="edit">
+                    <input type="hidden" name="reviewIndex" value="<%= index %>">
+                    <input type="text" name="editedReview" value="<%= review %>">
+                    <button type="submit">Edit</button>
+                </form>
+            </div>
+        <% }) %>
+    </div>
+</body>
+</html>

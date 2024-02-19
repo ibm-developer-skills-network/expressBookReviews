@@ -1,0 +1,115 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+
+* {
+    margin: 0;
+    padding: 0;
+    text-decoration: none;
+    list-style: none;
+    box-sizing: border-box;
+    font-family: "Poppins", sans-serif;
+}
+
+.books {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    margin: 50px auto 100px auto;
+    padding: 0px 50px;
+    gap: 10px;
+    max-width: 1500px;
+}
+
+.book {
+    box-shadow: 2px 2px 4px rgb(0, 0, 0, 0.3);
+    padding: 30px;
+    border-radius: 10px;
+}
+
+.book.review .flex {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.book.review button {
+    color: white;
+    background: crimson;
+    border: none;
+    outline: none;
+    cursor: pointer;
+    font-weight: 700;
+    padding: 15px 30px;
+}
+
+.author {
+    color: black;
+    font-weight: 700;
+    font-size: 20px;
+    margin-bottom: 10px;
+    line-height: 1.4em;
+}
+
+.title {
+    color: grey;
+    font-size: 15px;
+    line-height: 1.5em;
+}
+
+.book a {
+    color: white;
+    background-color: green;
+    display: flex;
+    width: fit-content;
+    font-weight: 700;
+    margin-top: 20px;
+    padding: 15px 30px;
+    border-radius: 5px;
+    font-size: 15px;
+    box-shadow: 2px 2px 4px rgb(0, 0, 0, 0.1);
+}
+
+.search {
+    display: flex;
+    align-items: center;
+    margin: 0px auto 0px auto;
+    gap: 20px;
+    padding: 50px;
+    max-width: 1500px;
+}
+
+.search input {
+    width: 100%;
+}
+
+.search input, button {
+    border: none;
+    outline: none;
+    padding: 15px;
+    border-radius: 5px;
+    font-size: 15px;
+    box-shadow: 2px 2px 4px rgb(0, 0, 0, 0.2);
+}
+
+.search button {
+    color: white;
+    background-color: blue;
+    cursor: pointer;
+    font-weight: 700;
+    padding: 15px 30px;
+}
+
+.edit {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 15px;
+    gap: 15px;
+}
+
+.edit input {
+    border: none;
+    outline: none;
+    box-shadow: 2px 2px 4px rgb(0, 0, 0, 0.2);
+    border-radius: 5px;
+    font-size: 15px;
+    width: 100%;
+    padding: 15px;
+}
