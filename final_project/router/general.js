@@ -26,9 +26,22 @@ public_users.get("/isbn/:isbn", function (req, res) {
 });
   
 // Get book details based on author
-public_users.get('/author/:author',function (req, res) {
-  //Write your code here
-  return res.status(300).json({message: "Yet to be implemented"});
+public_users.get("/author/:author", function (req, res) {
+  const author = req.params.author;
+  const booksByAuthor = {}; //Check  if it is better to use an array instead of an object.
+
+  if (!author) {
+    return res.status(400).json({ message: "Author not provided." });
+  }
+
+  for (const [isbn, bookDetails] of Object.entries(books)) {
+    if (bookDetails.author === author) {
+      //Check if it is better to push the data into an array. --> booksByAuthor.push(books[isbn]);
+      booksByAuthor[isbn] = books[isbn];
+    }
+  }
+
+  return res.status(200).send(JSON.stringify(booksByAuthor, null, 4));
 });
 
 // Get all books based on title
