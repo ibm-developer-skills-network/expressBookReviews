@@ -5,9 +5,26 @@ let users = require("./auth_users.js").users;
 const public_users = express.Router();
 
 
-public_users.post("/register", (req,res) => {
-  //Write your code here
-  return res.status(300).json({message: "Yet to be implemented"});
+public_users.post("/register", (req, res) => {
+  const userName = req.body.username;
+  const password = req.body.password;
+
+  if (!userName || !password) {
+    return res.status(400).json({
+      message:
+        "Unable to register user because username &/ password were not provided correctly.",
+    });
+  }
+
+  if (!isValid(userName)) {
+    return res.status(400).json({ message: "The username already exists!" });
+  }
+
+  users.push({ username: userName, password: password });
+  console.log("users: ", users);
+  return res
+    .status(200)
+    .json({ message: "User successfully registred. Now you can login" });
 });
 
 // Get the book list available in the shop
