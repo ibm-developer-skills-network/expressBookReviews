@@ -28,7 +28,7 @@ public_users.get("/isbn/:isbn", function (req, res) {
 // Get book details based on author
 public_users.get("/author/:author", function (req, res) {
   const author = req.params.author;
-  const booksByAuthor = {}; //Check  if it is better to use an array instead of an object.
+  const booksByAuthor = [];
 
   if (!author) {
     return res.status(400).json({ message: "Author not provided." });
@@ -36,8 +36,7 @@ public_users.get("/author/:author", function (req, res) {
 
   for (const [isbn, bookDetails] of Object.entries(books)) {
     if (bookDetails.author === author) {
-      //Check if it is better to push the data into an array. --> booksByAuthor.push(books[isbn]);
-      booksByAuthor[isbn] = books[isbn];
+      booksByAuthor.push(books[isbn]);
     }
   }
 
@@ -45,9 +44,21 @@ public_users.get("/author/:author", function (req, res) {
 });
 
 // Get all books based on title
-public_users.get('/title/:title',function (req, res) {
-  //Write your code here
-  return res.status(300).json({message: "Yet to be implemented"});
+public_users.get("/title/:title", function (req, res) {
+  const bookTitle = req.params.title;
+  const booksByTitle = [];
+
+  if (!bookTitle) {
+    return res.status(400).json({ message: "Title not provided." });
+  }
+
+  for (const [isbn, bookDetails] of Object.entries(books)) {
+    if (bookDetails.title === bookTitle) {
+      booksByTitle.push(books[isbn]);
+    }
+  }
+
+  return res.status(200).send(JSON.stringify(booksByTitle, null, 4));
 });
 
 //  Get book review
