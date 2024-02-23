@@ -78,6 +78,24 @@ regd_users.put("/auth/review/:isbn", (req, res) => {
   return res.status(200).send(JSON.stringify(book, null, 4));
 });
 
+// Delete a book review based on the logged in user
+regd_users.delete("/auth/review/:isbn", (req, res) => {
+  const isbn = req.params.isbn;
+  const username = req.session.authorization.username;
+
+  if (!isbn || !books[isbn]) {
+    res.status(400).json({
+      message:
+        "Error finding book details by isbn, provide a correct/valid isbn.",
+    });
+  }
+
+  delete books[isbn].reviews[username];
+  res.status(200).json({
+    message: `Book review made by ${username} was successfully deleted.`,
+  });
+});
+
 module.exports.authenticated = regd_users;
 module.exports.isValid = isValid;
 module.exports.users = users;
