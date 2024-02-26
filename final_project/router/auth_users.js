@@ -106,8 +106,4 @@ regd_users.delete("/review/:isbn", (req, res) => {
   module.exports.users = users;
   
 
-module.exports.authenticated = regd_users;
-module.exports.doesExist = doesExist;
-module.exports.users = users;
-
 
