@@ -33,6 +33,20 @@ public_users.post("/register", (req,res) => {
 // Get the book list available in the shop
 public_users.get('/',function (req, res) {
   //Write your code here
+  const axios = require('axios');
+  const bookList = async () => {
+    try {
+      const response = await axios.get('https://zdocs22-5000.theiadockernext-1-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai'); 
+      return response.data;
+    } catch (error) {
+      throw new Error('Failed to fetch book list');
+    }
+  };
+  
+  module.exports = {
+    bookList
+  };
+res.send(bookList)
   return res.status(300).json({message: "Yet to be implemented"});
 });
 
