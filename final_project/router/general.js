@@ -72,12 +72,15 @@ public_users.get("/title/:title", function (req, res) {
   }
 
   for (const [isbn, bookDetails] of Object.entries(books)) {
+    const { author, reviews } = bookDetails;
     if (bookDetails.title === bookTitle) {
-      booksByTitle.push(books[isbn]);
+      booksByTitle.push({ isbn, author, reviews });
     }
   }
 
-  return res.status(200).send(JSON.stringify(booksByTitle, null, 4));
+  return res
+    .status(200)
+    .send(JSON.stringify({ booksbytitle: booksByTitle }, null, 4));
 });
 
 //  Get book review
