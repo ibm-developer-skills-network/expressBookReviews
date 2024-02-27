@@ -75,7 +75,9 @@ regd_users.put("/auth/review/:isbn", (req, res) => {
   }
 
   book.reviews[username] = review;
-  return res.status(200).send(JSON.stringify(book, null, 4));
+  return res.status(200).json({
+    message: `The review for the book with ISBN ${isbn} has been added/updated.`,
+  });
 });
 
 // Delete a book review based on the logged in user
