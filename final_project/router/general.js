@@ -27,8 +27,16 @@ public_users.post("/register", (req, res) => {
 });
 
 // Get the book list available in the shop
-public_users.get("/", function (req, res) {
-  return res.status(200).send(JSON.stringify(books, null, 4));
+public_users.get("/", async function (req, res) {
+  try {
+    const books = await getAllBooks();
+    return res.status(200).send(JSON.stringify(books, null, 4));
+  } catch (error) {
+    console.error("Error getting all books. ", error);
+    return res
+      .status(500)
+      .json({ message: "Error when trying to get the book list available." });
+  }
 });
 
 // Get book details based on ISBN
@@ -94,5 +102,15 @@ public_users.get("/review/:isbn", function (req, res) {
   const bookReview = books[isbn].reviews;
   return res.status(200).send(JSON.stringify(bookReview, null, 4));
 });
+
+/* ----- helper functions ----- */
+
+const getAllBooks = () => {
+  return new Promise((resolve, reject) => {
+    setTimeout(() => {
+      books ? resolve(books) : reject(new Error("Error getting all books."));
+    }, 1000);
+  });
+};
 
 module.exports.general = public_users;
