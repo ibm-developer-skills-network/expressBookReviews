@@ -12,4 +12,15 @@ let books = {
     10: { "author": "Samuel Beckett", "title": "Molloy, Malone Dies, The Unnamable, the trilogy", "reviews": {} }
 }
 
-module.exports = books;
+function search(object, key, value) {
+    for (const property in object) {
+        if (Object.hasOwnProperty.call(object, property)) {
+            if (object[property][key] === value) {
+                return object[property]
+            }
+        }
+    }
+}
+
+module.exports.books = books;
+module.exports.search = search;

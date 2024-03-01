@@ -2,7 +2,9 @@
 const express = require('express');
 const public = express.Router();
 
-let books = require("./booksdb.js");
+let books = require("./booksdb.js").books;
+let search = require("./booksdb.js").search;
+
 let isValid = require("./auth_users.js").isValid;
 let users = require("./auth_users.js").users;
 
@@ -29,12 +31,9 @@ public.get('/isbn/:isbn', function (req, res) {
 });
 
 public.get('/author/:author', function (req, res) {
-    for (const property in books) {
-        if (Object.hasOwnProperty.call(books, property)) {
-            if (req.params.author === books[property]["author"]) {
-                return res.status(200).json(books[property])
-            }
-        }
+    let result = search(books, "author", req.params.author)
+    if (result) {
+        return res.status(200).json(result)
     }
     return res.status(404).json({ message: "Not Found" })
 });
