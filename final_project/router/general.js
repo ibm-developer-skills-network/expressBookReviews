@@ -76,22 +76,18 @@ public_users.get("/author/:author", function (req, res) {
 // Get all books based on title
 public_users.get("/title/:title", function (req, res) {
   const bookTitle = req.params.title;
-  const booksByTitle = [];
+  const books = getBookBy("title", bookTitle);
 
-  if (!bookTitle) {
-    return res.status(400).json({ message: "Title not provided." });
-  }
-
-  for (const [isbn, bookDetails] of Object.entries(books)) {
-    const { author, reviews } = bookDetails;
-    if (bookDetails.title === bookTitle) {
-      booksByTitle.push({ isbn, author, reviews });
-    }
-  }
-
-  return res
-    .status(200)
-    .send(JSON.stringify({ booksbytitle: booksByTitle }, null, 4));
+  books
+    .then((bookData) => {
+      return res
+        .status(200)
+        .send(JSON.stringify({ booksbytitle: bookData }, null, 4));
+    })
+    .catch((error) => {
+      console.error(error);
+      return res.status(500).json({ message: "Error getting books by title." });
+    });
 });
 
 //  Get book review
