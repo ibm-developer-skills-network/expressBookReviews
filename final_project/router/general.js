@@ -21,13 +21,11 @@ public.get('/', function (req, res) {
     return res.status(200).json(books)
 });
 
-
-
-public.get('/isbn/:isbn', function (req, res) { // Get book details based on ISBN
-    
-    // Write your code here
-    
-    return res.status(300).json({ message: "Yet to be implemented" })
+public.get('/isbn/:isbn', function (req, res) {
+    const id = req.params.isbn;
+    if (books.hasOwnProperty(id)) {
+        return res.status(200).json(books[id])
+    } else return res.status(404).json({ message: "Not Found" })
 });
 
 
