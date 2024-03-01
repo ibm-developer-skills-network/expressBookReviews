@@ -17,11 +17,8 @@ public.post("/register", (req, res) => {
 
 
 
-public.get('/', function (req, res) { // Get the book list available in the shop
-    
-    // Write your code here
-    
-    return res.status(300).json({ message: "Yet to be implemented" })
+public.get('/', function (req, res) {
+    return res.status(300).json(books)
 });
 
 
