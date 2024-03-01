@@ -56,23 +56,21 @@ public_users.get("/isbn/:isbn", function (req, res) {
 
 // Get book details based on author
 public_users.get("/author/:author", function (req, res) {
-  const author = req.params.author;
-  const booksByAuthor = [];
+  const authorName = req.params.author;
+  const books = getBookBy("author", authorName);
 
-  if (!author) {
-    return res.status(400).json({ message: "Author not provided." });
-  }
-
-  for (const [isbn, bookDetails] of Object.entries(books)) {
-    if (bookDetails.author === author) {
-      const { title, reviews } = bookDetails;
-      booksByAuthor.push({ isbn, title, reviews });
-    }
-  }
-
-  return res
-    .status(200)
-    .send(JSON.stringify({ booksbyauthor: booksByAuthor }, null, 4));
+  books
+    .then((bookData) => {
+      return res
+        .status(200)
+        .send(JSON.stringify({ booksbyauthor: bookData }, null, 4));
+    })
+    .catch((error) => {
+      console.error(error);
+      return res
+        .status(500)
+        .json({ message: "Error getting books by author." });
+    });
 });
 
 // Get all books based on title
@@ -124,6 +122,38 @@ function getBookByISBN(ISBN) {
       books[ISBN]
         ? resolve(books[ISBN])
         : reject(new Error(`Book with isbn ${ISBN} not found.`));
+    }, 1000);
+  });
+
+  return result;
+}
+
+function getBookBy(param, value) {
+  function fieldsByParam(data, param) {
+    const { author, title, reviews } = data;
+    switch (param) {
+      case "author":
+        return { title, reviews };
+      case "title":
+        return { author, reviews };
+      default:
+        return { author, title, reviews };
+    }
+  }
+
+  const result = new Promise((resolve, reject) => {
+    setTimeout(() => {
+      if (!books) {
+        reject(new Error(`Error when trying to get books by ${param}.`));
+      }
+
+      const booksFound = [];
+      for (const [isbn, bookDetails] of Object.entries(books)) {
+        if (bookDetails[param] === value) {
+          booksFound.push({ isbn, ...fieldsByParam(bookDetails, param) });
+        }
+      }
+      resolve(booksFound);
     }, 1000);
   });
 
