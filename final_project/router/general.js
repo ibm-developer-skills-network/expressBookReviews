@@ -18,7 +18,7 @@ public.post("/register", (req, res) => {
 
 
 public.get('/', function (req, res) {
-    return res.status(300).json(books)
+    return res.status(200).json(books)
 });
 
 
