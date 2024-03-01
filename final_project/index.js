@@ -3,8 +3,8 @@ const express = require('express');
 const jwt = require('jsonwebtoken');
 const session = require('express-session');
 
-const customer_routes = require('./router/auth_users.js').authenticated;
-const genl_routes = require('./router/general.js').general;
+const registered = require('./router/auth_users.js').authenticated;
+const public = require('./router/general.js').general;
 
 const app = express();
 const port = 5000;
@@ -21,7 +21,7 @@ app.use("/customer/auth/*", function auth(req, res, next) {
 });
 
 
-app.use("/customer", customer_routes);
-app.use("/", genl_routes);
+app.use("/customer", registered);
+app.use("/", public);
 
 app.listen(port, () => console.log("Server is running"));
