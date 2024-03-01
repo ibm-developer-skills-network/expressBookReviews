@@ -54,7 +54,7 @@ public.get('/title/:title', function (req, res) {
 public.get('/review/:isbn', function (req, res) {
     const id = req.params.isbn;
     if (books.hasOwnProperty(id)) {
-        return res.status(200).json(books[id].review)
+        return res.status(200).json(books[id].reviews)
     }
     return res.status(404).json({ message: "Not Found" })
 });
