@@ -28,13 +28,15 @@ public.get('/isbn/:isbn', function (req, res) {
     } else return res.status(404).json({ message: "Not Found" })
 });
 
-
-
-public.get('/author/:author', function (req, res) { // Get book details based on author
-    
-    // Write your code here
-    
-    return res.status(300).json({ message: "Yet to be implemented" })
+public.get('/author/:author', function (req, res) {
+    for (const property in books) {
+        if (Object.hasOwnProperty.call(books, property)) {
+            if (req.params.author === books[property]["author"]) {
+                return res.status(200).json(books[property])
+            }
+        }
+    }
+    return res.status(404).json({ message: "Not Found" })
 });
 
 
