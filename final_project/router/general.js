@@ -23,23 +23,27 @@ public.get('/', function (req, res) {
     return res.status(200).json(books)
 });
 
+
 public.get('/isbn/:isbn', function (req, res) {
     const id = req.params.isbn;
     if (books.hasOwnProperty(id)) {
         return res.status(200).json(books[id])
-    } else return res.status(404).json({ message: "Not Found" })
+    }
+    return res.status(404).json({ message: "Not Found" })
 });
 
+
 public.get('/author/:author', function (req, res) {
-    let result = search(books, "author", req.params.author)
+    const result = search(books, "author", req.params.author)
     if (result) {
         return res.status(200).json(result)
     }
     return res.status(404).json({ message: "Not Found" })
 });
 
+
 public.get('/title/:title', function (req, res) {
-    let result = search(books, "title", req.params.title)
+    const result = search(books, "title", req.params.title)
     if (result) {
         return res.status(200).json(result)
     }
