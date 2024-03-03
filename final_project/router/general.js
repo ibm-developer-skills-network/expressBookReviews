@@ -35,9 +35,9 @@ public.get('/', function (req, res) {
 
 
 public.get('/isbn/:isbn', function (req, res) {
-    const id = req.params.isbn;
-    if (books.hasOwnProperty(id)) {
-        return res.status(200).json(books[id])
+    const result = search(books, 'isbn', req.params.isbn);
+    if (result) {
+        return res.status(200).json(result)
     }
     return res.status(404).json({ message: 'Not Found' })
 });
