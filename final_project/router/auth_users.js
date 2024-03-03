@@ -3,7 +3,7 @@ const express = require('express');
 const jwt = require('jsonwebtoken');
 const registered = express.Router();
 
-let books = require("./booksdb.js");
+let books = require('./booksdb.js');
 let users = [];
 
 
@@ -29,18 +29,18 @@ const authenticatedUser = (username, password) => { // Returns boolean
 
 
 
-registered.post("/login", (req, res) => { // Only registered users can login
+registered.post('/login', (req, res) => { // Only registered users can login
 
     // Write your code here
 
-    return res.status(300).json({ message: "Yet to be implemented" })
+    return res.status(300).json({ message: 'Yet to be implemented' })
 });
 
-registered.put("/auth/review/:isbn", (req, res) => { // Add a book review
+registered.put('/auth/review/:isbn', (req, res) => { // Add a book review
 
     // Write your code here
 
-    return res.status(300).json({ message: "Yet to be implemented" })
+    return res.status(300).json({ message: 'Yet to be implemented' })
 });
 
 
