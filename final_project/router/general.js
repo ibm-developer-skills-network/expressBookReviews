@@ -11,10 +11,20 @@ let users = require("./auth_users.js").users;
 
 
 public.post("/register", (req, res) => {
-    
-    // Write your code here
-    
-    return res.status(300).json({ message: "Yet to be implemented" })
+    const db = isValid(req.body.username);
+    let note = 'is not valid (2 to 8 characters, lowercase or numbers)'
+      , code = 401
+      ;
+    if (db === 0) note = 'is unavailable';
+    else if (db === 1) {
+        code = 200;
+        users.push({
+            username: req.body.username,
+            password: req.body.password
+        });
+        note = 'successfully registered, you can login'
+    }
+    return res.status(code).json({ message: `${req.body.username} ${note}` })
 });
 
 

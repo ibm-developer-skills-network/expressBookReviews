@@ -8,10 +8,17 @@ let users = [];
 
 
 
-const isValid = (username) => { // Returns boolean
+// db connection not provided in the course
 
-    // Write code to check is the username is valid
 
+
+const isValid = (username) => {
+    if (/^[a-z0-9]{2,8}$/.test(username)) {
+        for (const exist of users) {
+            if (exist.username === username) return 0
+        }
+        return 1
+    }
 }
 
 const authenticatedUser = (username, password) => { // Returns boolean
