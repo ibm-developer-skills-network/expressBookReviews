@@ -12,23 +12,4 @@ let books = {
     10: { "author": "Samuel Beckett", "title": "Molloy, Malone Dies, The Unnamable, the trilogy", "reviews": {} }
 }
 
-function search(db, column, part, results = []) {
-    if ('isbn' === column)
-        Object.keys(db)
-            .filter(isbn => String(isbn).indexOf(part) > -1)
-            .forEach(isbn => results.push(db[isbn]))
-            ;
-    else {
-        for (const row in db) {
-            if (Object.hasOwnProperty.call(db, row)) {
-                if (String(db[row][column]).indexOf(part) > -1) {
-                    results.push(db[row])
-                }
-            }
-        }
-    }
-    return results.length ? results : null
-}
-
 module.exports.books = books;
-module.exports.search = search;

@@ -2,11 +2,58 @@
 const express = require('express');
 const public = express.Router();
 
-let books = require('./booksdb.js').books;
-let search = require('./booksdb.js').search;
+let db = require('./booksdb.js').books;
 
 let isValid = require('./auth_users.js').isValid;
 let users = require('./auth_users.js').users;
+
+
+
+function search(col, it, res) {
+    if (col === '/') return res.status(200).json({ books: db });
+    else if (col === 'review' && db.hasOwnProperty(it))
+        return res.status(200).json(db[it].reviews);
+    else {
+        let rows = [];
+        if (col === 'isbn') Object.keys(db)
+            .filter(isbn => String(isbn).indexOf(it) > -1)
+            .forEach(isbn => rows.push(db[isbn]))
+            ;
+        else {
+            for (const row in db) {
+                if (Object.hasOwnProperty.call(db, row)) {
+                    if (String(db[row][col]).indexOf(it) > -1) {
+                        rows.push(db[row])
+                    }
+                }
+            }
+        }
+        if (rows.length) return res.status(200).json(rows);
+        else return res.status(404).json({ message: 'Not Found' })
+    }
+}
+
+
+
+public.get('/', function (req, res) {
+    return search('/', null, res)
+});
+
+public.get('/isbn/:isbn', function (req, res) {
+    return search('isbn', req.params['isbn'], res)
+});
+
+public.get('/author/:author', function (req, res) {
+    return search('author', req.params['author'], res)
+});
+
+public.get('/title/:title', function (req, res) {
+    return search('title', req.params['title'], res)
+});
+
+public.get('/review/:isbn', function (req, res) {
+    return search('review', req.params['isbn'], res)
+});
 
 
 
@@ -25,48 +72,6 @@ public.post('/register', (req, res) => {
         note = 'successfully registered, you can login'
     }
     return res.status(code).json({ message: `${req.body.username} ${note}` })
-});
-
-
-
-public.get('/', function (req, res) {
-    return res.status(200).json(books)
-});
-
-
-public.get('/isbn/:isbn', function (req, res) {
-    const result = search(books, 'isbn', req.params.isbn);
-    if (result) {
-        return res.status(200).json(result)
-    }
-    return res.status(404).json({ message: 'Not Found' })
-});
-
-
-public.get('/author/:author', function (req, res) {
-    const result = search(books, 'author', req.params.author)
-    if (result) {
-        return res.status(200).json(result)
-    }
-    return res.status(404).json({ message: 'Not Found' })
-});
-
-
-public.get('/title/:title', function (req, res) {
-    const result = search(books, 'title', req.params.title)
-    if (result) {
-        return res.status(200).json(result)
-    }
-    return res.status(404).json({ message: 'Not Found' })
-});
-
-
-public.get('/review/:isbn', function (req, res) {
-    const id = req.params.isbn;
-    if (books.hasOwnProperty(id)) {
-        return res.status(200).json(books[id].reviews)
-    }
-    return res.status(404).json({ message: 'Not Found' })
 });
 
 
