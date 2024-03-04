@@ -9,6 +9,10 @@ let users = require('./auth_users.js').users;
 
 
 
+// db connection not provided in the course
+
+
+
 function search(col, it, res) {
     if (col === '/') return res.status(200).json({ books: db });
     else if (col === 'review' && db.hasOwnProperty(it))
@@ -16,19 +20,20 @@ function search(col, it, res) {
     else {
         let result = {};
         if (col === 'isbn') Object.keys(db)
-            .filter(isbn => String(isbn).indexOf(it) > -1)
-            .forEach(isbn => result[isbn] = db[isbn])
+            .filter(id => String(id).indexOf(it) > -1)
+            .forEach(id => result[id] = db[id])
             ;
         else {
-            for (const row in db) {
-                if (Object.hasOwnProperty.call(db, row)) {
-                    if (String(db[row][col]).indexOf(it) > -1) {
-                        result[row] = db[row]
+            for (const id in db) {
+                if (Object.hasOwnProperty.call(db, id)) {
+                    if (String(db[id][col]).indexOf(it) > -1) {
+                        result[id] = db[id]
                     }
                 }
             }
         }
-        if (Object.keys(result).length) return res.status(200).json(result);
+        if (Object.keys(result).length)
+            return res.status(200).json(result);
         else return res.status(404).json({ message: 'Not Found' })
     }
 }
