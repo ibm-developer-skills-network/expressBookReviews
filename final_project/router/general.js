@@ -14,21 +14,21 @@ function search(col, it, res) {
     else if (col === 'review' && db.hasOwnProperty(it))
         return res.status(200).json(db[it].reviews);
     else {
-        let rows = [];
+        let result = {};
         if (col === 'isbn') Object.keys(db)
             .filter(isbn => String(isbn).indexOf(it) > -1)
-            .forEach(isbn => rows.push(db[isbn]))
+            .forEach(isbn => result[isbn] = db[isbn])
             ;
         else {
             for (const row in db) {
                 if (Object.hasOwnProperty.call(db, row)) {
                     if (String(db[row][col]).indexOf(it) > -1) {
-                        rows.push(db[row])
+                        result[row] = db[row]
                     }
                 }
             }
         }
-        if (rows.length) return res.status(200).json(rows);
+        if (Object.keys(result).length) return res.status(200).json(result);
         else return res.status(404).json({ message: 'Not Found' })
     }
 }
