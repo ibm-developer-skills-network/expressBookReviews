@@ -32,3 +32,10 @@ curl --header "Content-Type: application/json" \
     --data '{ "username":"john", "password":"fake" }' \
     localhost:5000/register
 ```
+Login as a registered user
+```Shell
+curl --header "Content-Type: application/json" \
+    --request POST \
+    --data '{ "username":"john", "password":"fake" }' \
+    localhost:5000/customer/login
+```
