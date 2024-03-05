@@ -9,16 +9,33 @@ const public = require('./router/general.js').general;
 const app = express();
 const port = 5000;
 
-
 app.use(express.json());
-app.use('/customer', session({ secret: 'fingerprint_customer', resave: true, saveUninitialized: true }));
 
+
+
+app.use(
+    '/customer',
+    session({
+        secret: 'should_be_env_variable',
+        saveUninitialized: true,
+        resave: true
+    })
+);
 
 app.use('/customer/auth/*', function auth(req, res, next) {
-
-    // Write the authenication mechanism here
-
+    const auth = req.session.authorization;
+    console.log('TEST TRY AUTH');
+    if (auth) {
+        jwt.verify(auth['token'], 'req.session.secret', (error, decoded) => {
+            if (!error) {
+                req.user = decoded.username;
+                next()
+            }
+        })  
+    }
+    return res.status(401).json({ message: 'Unauthorized' })
 });
+
 
 
 app.use('/customer', registered);

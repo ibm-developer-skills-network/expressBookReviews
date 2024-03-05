@@ -14,33 +14,54 @@ let users = [];
 
 const isValid = (username) => {
     if (/^[a-z0-9]{2,8}$/.test(username)) {
-        for (const exist of users) {
-            if (exist.username === username) return 0
+        for (const one of users) {
+            if (one.username === username)
+                return 0
         }
         return 1
     }
 }
 
-const authenticatedUser = (username, password) => { // Returns boolean
-
-    // Write code to check if username and password match the one we have in records.
-
+const authenticatedUser = (username, password) => {
+    for (const one of users) {
+        if (one.username === username) {
+            if (one.password === password) {
+                return 1
+            } else return 0
+        }   
+    }
 }
 
 
 
-registered.post('/login', (req, res) => { // Only registered users can login
-
-    // Write your code here
-
-    return res.status(300).json({ message: 'Yet to be implemented' })
+registered.post('/login', (req, res) => {
+    const { username, password } = req.body;
+    if (authenticatedUser(username, password)) {
+        const token = jwt.sign(
+            { data: password },
+            'req.session.secret',
+            { expiresIn: '1h' }
+        );
+        req.session.authorization = { token, username }
+        return res.status(200).json({ message: `${username} successfully loggeg in` })
+    }
+    return res.status(400).json({ message: "Invalid username and/or password" })
 });
 
-registered.put('/auth/review/:isbn', (req, res) => { // Add a book review
+// clear; curl --header "Content-Type: application/json" --request POST --data '{ "username":"john", "password":"fake" }' localhost:5000/register && curl --header "Content-Type: application/json" --request POST --data '{ "username":"john", "password":"fake" }' localhost:5000/customer/login && curl --header "Content-Type: multipart/form-data" --request PUT localhost:5000/customer/auth/review/8
 
-    // Write your code here
-
-    return res.status(300).json({ message: 'Yet to be implemented' })
+registered.put('/auth/review/:isbn', (req, res) => {
+    const isbn = req.params['isbn'];
+    console.log('TEST HAS AUTH');
+    if (books[isbn]) {
+        books[isbn][reviews][req.user] = req.query.review;
+        return res.status(200).json({
+            message: `The review for the book with ISBN ${isbn} has been added/updated`
+        })
+    }
+    return res.status(400).json({
+        message: `No book is registered under ISBN ${isbn}`
+    })
 });
 
 
