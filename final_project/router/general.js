@@ -24,9 +24,9 @@ public_users.post("/register", (req,res) => {
     if (username && password) {
         if (!doesExist(username)) { 
         users.push({"username":username,"password":password});
-        return res.status(200).json({message: "User successfully registred. Now you can login"});
+        return res.status(200).json({message: "Customer successfully registred. Now you can login"});
         } else {
-        return res.status(404).json({message: "User already exists!"});    
+        return res.status(404).json({message: "Customer already exists!"});    
         }
     } 
     return res.status(404).json({message: "Unable to register user."});
@@ -66,7 +66,7 @@ public_users.get('/author/:author',function (req, res) {
         let authorBooks = [];
         Object.entries(books).forEach(([key, value]) => {
             if (value.author === author) {
-                authorBooks.push(value.title)
+                authorBooks.push(value)
             }
         })
         resolve(authorBooks)
