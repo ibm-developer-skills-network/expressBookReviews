@@ -40,8 +40,8 @@ function search(col, it, res) {
 
 
 
-public.get('/', async function(req, res) {
-    return await search('/', null, res)
+public.get('/', function(req, res) {
+    return search('/', null, res)
 });
 
 public.get('/isbn/:isbn', function(req, res) {
