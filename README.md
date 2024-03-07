@@ -49,7 +49,6 @@ curl --header "Content-Type: application/json" \
 ```
 #### Testable via Postman
 > For this part it is necessary that the app is accessible from the Internet via the free [Postman](https://www.postman.com/) account that you have created, since `curl` cannot access `req.session` from CLI
-
 ##### Add/modify a book review
 ```
 PUT <labURL>/customer/auth/review/1?review=good
@@ -57,4 +56,55 @@ PUT <labURL>/customer/auth/review/1?review=good
 ##### Delete book review added by that particular user
 ```
 DELETE <labURL>/customer/auth/review/1
+```
+## Tasks that only offer text fields for evaluation
+### Get all books – Using async callback function
+```JavaScript
+// Example tested successfully (but not kept in general.js)
+
+public.get('/', async function(req, res) {
+    return await search('/', null, res)
+});
+```
+### Search by ISBN – Using Promises
+```JavaScript
+// Example tested successfully (but not modified in general.js)
+
+public.get('/isbn/:isbn', function(req, res) {
+    const request = new Promise((resolve) => {
+        (async function(){
+            const response = await search('isbn', req.params['isbn'], res);
+            resolve(response)
+        })()
+    });
+    request.then(result => { return result })
+});
+```
+#### Previous methods use my search function below covering public requests
+> db connection not provided in the course
+```JavaScript
+function search(col, it, res) {
+    if (col === '/') return res.status(200).json({ books: db });
+    else if (col === 'review' && db.hasOwnProperty(it))
+        return res.status(200).json(db[it].reviews);
+    else {
+        let result = {};
+        if (col === 'isbn') Object.keys(db)
+            .filter(id => String(id).indexOf(it) > -1)
+            .forEach(id => result[id] = db[id])
+            ;
+        else {
+            for (const id in db) {
+                if (Object.hasOwnProperty.call(db, id)) {
+                    if (String(db[id][col]).indexOf(it) > -1) {
+                        result[id] = db[id]
+                    }
+                }
+            }
+        }
+        if (Object.keys(result).length)
+            return res.status(200).json(result);
+        else return res.status(404).json({ message: 'Not Found' })
+    }
+}
 ```
