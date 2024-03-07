@@ -70,6 +70,28 @@ registered.put('/auth/review/:isbn', (req, res) => {
 
 
 
+registered.delete('/auth/review/:isbn', (req, res) => {
+    const isbn = req.params['isbn']
+        , user = req.session.authorization.username
+        ;
+    if (books[isbn]) {
+        if (books[isbn]['reviews'][user]) {
+            delete books[isbn]['reviews'][user];
+            return res.status(200).json({
+                message: `Review for the ISBN ${isbn} posted by ${user} has been deleted`
+            })
+        }
+        return res.status(400).json({
+            message: `No review by ${user} for the ISBN ${isbn}`
+        })
+    }
+    return res.status(400).json({
+        message: `No book is registered under ISBN ${isbn}`
+    })
+});
+
+
+
 module.exports.authenticated = registered;
 module.exports.isValid = isValid;
 module.exports.users = users;
