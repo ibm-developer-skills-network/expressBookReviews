@@ -40,23 +40,23 @@ function search(col, it, res) {
 
 
 
-public.get('/', function (req, res) {
+public.get('/', function(req, res) {
     return search('/', null, res)
 });
 
-public.get('/isbn/:isbn', function (req, res) {
+public.get('/isbn/:isbn', function(req, res) {
     return search('isbn', req.params['isbn'], res)
 });
 
-public.get('/author/:author', function (req, res) {
+public.get('/author/:author', function(req, res) {
     return search('author', req.params['author'], res)
 });
 
-public.get('/title/:title', function (req, res) {
+public.get('/title/:title', function(req, res) {
     return search('title', req.params['title'], res)
 });
 
-public.get('/review/:isbn', function (req, res) {
+public.get('/review/:isbn', function(req, res) {
     return search('review', req.params['isbn'], res)
 });
 
