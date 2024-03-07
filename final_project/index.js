@@ -16,7 +16,7 @@ app.use(express.json());
 app.use(
     '/customer',
     session({
-        secret: 'should_be_env_variable',
+        secret: 'secretOrPrivateKey',
         saveUninitialized: true,
         resave: true
     })
@@ -24,16 +24,12 @@ app.use(
 
 app.use('/customer/auth/*', function auth(req, res, next) {
     const auth = req.session.authorization;
-    console.log('TEST TRY AUTH');
     if (auth) {
-        jwt.verify(auth['token'], 'req.session.secret', (error, decoded) => {
-            if (!error) {
-                req.user = decoded.username;
-                next()
-            }
-        })  
-    }
-    return res.status(401).json({ message: 'Unauthorized' })
+        jwt.verify(auth['token'], 'secretOrPrivateKey', (error, decoded) => {
+            if (!error) next();
+            else return res.status(401).json({ message: 'Unauthorized' })
+        })
+    } else return res.status(403).json({ message: 'Forbidden' })
 });
 
 

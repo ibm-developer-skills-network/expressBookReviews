@@ -3,7 +3,7 @@ const express = require('express');
 const jwt = require('jsonwebtoken');
 const registered = express.Router();
 
-let books = require('./booksdb.js');
+let { books } = require('./booksdb.js');
 let users = [];
 
 
@@ -28,7 +28,7 @@ const authenticatedUser = (username, password) => {
             if (one.password === password) {
                 return 1
             } else return 0
-        }   
+        }
     }
 }
 
@@ -39,7 +39,7 @@ registered.post('/login', (req, res) => {
     if (authenticatedUser(username, password)) {
         const token = jwt.sign(
             { data: password },
-            'req.session.secret',
+            'secretOrPrivateKey',
             { expiresIn: '1h' }
         );
         req.session.authorization = { token, username }
@@ -48,15 +48,19 @@ registered.post('/login', (req, res) => {
     return res.status(400).json({ message: "Invalid username and/or password" })
 });
 
-// clear; curl --header "Content-Type: application/json" --request POST --data '{ "username":"john", "password":"fake" }' localhost:5000/register && curl --header "Content-Type: application/json" --request POST --data '{ "username":"john", "password":"fake" }' localhost:5000/customer/login && curl --header "Content-Type: multipart/form-data" --request PUT localhost:5000/customer/auth/review/8
+
 
 registered.put('/auth/review/:isbn', (req, res) => {
     const isbn = req.params['isbn'];
-    console.log('TEST HAS AUTH');
     if (books[isbn]) {
-        books[isbn][reviews][req.user] = req.query.review;
+        if (req.query['review']) {
+            books[isbn]['reviews'][req.session.authorization.username] = req.query.review;
+            return res.status(200).json({
+                message: `The review for the book with ISBN ${isbn} has been added/updated`
+            })
+        }
         return res.status(200).json({
-            message: `The review for the book with ISBN ${isbn} has been added/updated`
+            message: 'The query string parameter "review" was not found or correctly formed'
         })
     }
     return res.status(400).json({
