@@ -80,7 +80,7 @@ public.get('/isbn/:isbn', function(req, res) {
     request.then(result => { return result })
 });
 ```
-#### Previous methods use my search function below covering public requests
+### Previous methods use my search function below covering public requests
 > db connection not provided in the course
 ```JavaScript
 function search(col, it, res) {
