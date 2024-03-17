@@ -1,43 +1,52 @@
 const express = require('express');
-let books = require("./booksdb.js");
-let isValid = require("./auth_users.js").isValid;
-let users = require("./auth_users.js").users;
-const public_users = express.Router();
+const axios = require('axios');
+const bodyParser = require('body-parser');
 
+const router = express.Router();
 
-public_users.post("/register", (req,res) => {
-  //Write your code here
-  return res.status(300).json({message: "Yet to be implemented"});
+router.use(bodyParser.json());
+
+// Task 10: Get all books using Promise callbacks with Axios
+router.get('/books', async (req, res) => {
+    try {
+        const response = await axios.get('http://localhost:3000/books');
+        res.json(response.data);
+    } catch (error) {
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
 });
 
-// Get the book list available in the shop
-public_users.get('/',function (req, res) {
-  //Write your code here
-  return res.status(300).json({message: "Yet to be implemented"});
+// Task 11: Get book details by ISBN using Promise callbacks with Axios
+router.get('/books/isbn/:isbn', async (req, res) => {
+    const isbn = req.params.isbn;
+    try {
+        const response = await axios.get(`http://localhost:3000/books/isbn/${isbn}`);
+        res.json(response.data);
+    } catch (error) {
+        res.status(404).json({ error: 'Book not found' });
+    }
 });
 
-// Get book details based on ISBN
-public_users.get('/isbn/:isbn',function (req, res) {
-  //Write your code here
-  return res.status(300).json({message: "Yet to be implemented"});
- });
-  
-// Get book details based on author
-public_users.get('/author/:author',function (req, res) {
-  //Write your code here
-  return res.status(300).json({message: "Yet to be implemented"});
+// Task 12: Get book details by Author using Promise callbacks with Axios
+router.get('/books/author/:author', async (req, res) => {
+    const author = req.params.author;
+    try {
+        const response = await axios.get(`http://localhost:3000/books/author/${author}`);
+        res.json(response.data);
+    } catch (error) {
+        res.status(404).json({ error: 'No books found for this author' });
+    }
 });
 
-// Get all books based on title
-public_users.get('/title/:title',function (req, res) {
-  //Write your code here
-  return res.status(300).json({message: "Yet to be implemented"});
+// Task 13: Get book details by Title using Promise callbacks with Axios
+router.get('/books/title/:title', async (req, res) => {
+    const title = req.params.title;
+    try {
+        const response = await axios.get(`http://localhost:3000/books/title/${title}`);
+        res.json(response.data);
+    } catch (error) {
+        res.status(404).json({ error: 'No books found with this title' });
+    }
 });
 
-//  Get book review
-public_users.get('/review/:isbn',function (req, res) {
-  //Write your code here
-  return res.status(300).json({message: "Yet to be implemented"});
-});
-
-module.exports.general = public_users;
+module.exports = router;
