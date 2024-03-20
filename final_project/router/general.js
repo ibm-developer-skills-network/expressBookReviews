@@ -20,6 +20,15 @@ public_users.post("/register", (req,res) => {
   return res.status(201).json({message: "User registered successfully"});
 });
 
+// Middleware to check authentication
+public_users.use((req, res, next) => {
+  // Check if user is authenticated
+  if (!isValid(req)) {
+    return res.status(401).json({ message: "Unauthorized" });
+  }
+  next(); // Continue to the next middleware/route handler
+});
+
 // Get the book list available in the shop
 public_users.get('/',function (req, res) {
   const bookList = Object.values(books).map(book => {
