@@ -41,8 +41,9 @@ Tasks for fetching books and details are implemented using Promises or Async/Awa
 
 ```plaintext
 📁 expressBookReviews
-| |-📁 final_project
-| | |-📁 router
+| ├──📁 final_project
+| ├──📁 screenshots
+| | ├──📁 router
 | | ├──📄auth_users.js      # Routes for authenticated users (Login/Logout)
 | | ├── 📄booksdb.js         # Database of books (Book details and reviews)
 | | ├──📄general.js         # Routes for public access (Book retrieval)
