@@ -1,22 +1,48 @@
 const express = require('express');
 const jwt = require('jsonwebtoken');
-const session = require('express-session')
-const customer_routes = require('./router/auth_users.js').authenticated;
-const genl_routes = require('./router/general.js').general;
+const session = require('express-session');
+const books = require('./router/booksdb.js');
+const customerRoutes = require('./router/auth_users.js').authenticated;
+const genlRoutes = require('./router/general.js').general;
+const jwtSecret = require('./router/auth_users.js').jwtSecret;
 
 const app = express();
-
 app.use(express.json());
+app.use('/customer', session({
+  secret: process.env.SESSION_SECRET || 'change-this-session-secret',
+  resave: false,
+  saveUninitialized: false,
+  cookie: { httpOnly: true, sameSite: 'lax' }
+}));
 
-app.use("/customer",session({secret:"fingerprint_customer",resave: true, saveUninitialized: true}))
+// The catalog is served as JSON for Axios-based retrieval in general.js.
+app.get('/_internal/books', (_req, res) => res.json(books));
 
-app.use("/customer/auth/*", function auth(req,res,next){
-//Write the authenication mechanism here
+// Authenticate protected review requests with the login session or a Bearer JWT.
+app.use('/customer/auth/*', (req, res, next) => {
+  if (req.session?.user) {
+    req.user = { username: req.session.user };
+    return next();
+  }
+
+  const authorization = req.get('authorization') || '';
+  const match = authorization.match(/^Bearer\s+(.+)$/i);
+  if (!match) return res.status(401).json({ message: 'Authentication required' });
+
+  try {
+    req.user = jwt.verify(match[1], jwtSecret);
+    return next();
+  } catch (_error) {
+    return res.status(401).json({ message: 'Invalid or expired token' });
+  }
 });
- 
-const PORT =5000;
 
-app.use("/customer", customer_routes);
-app.use("/", genl_routes);
+app.use('/customer', customerRoutes);
+app.use('/', genlRoutes);
 
-app.listen(PORT,()=>console.log("Server is running"));
+const PORT = Number(process.env.PORT) || 5000;
+if (require.main === module) {
+  app.listen(PORT, () => console.log(`Server is running on port ${PORT}`));
+}
+
+module.exports = app;
