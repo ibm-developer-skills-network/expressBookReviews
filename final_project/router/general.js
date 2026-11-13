@@ -125,5 +125,25 @@ const getAllBooksAsync = async () => {
   }
 };
 
+// Task 11: Get book details by ISBN using Axios and Promises
+const getBookByISBNAsync = (isbn) => {
+  return axios
+    .get(`http://localhost:5000/isbn/${encodeURIComponent(isbn)}`)
+    .then((response) => {
+      console.log("Book retrieved successfully:");
+      console.log(JSON.stringify(response.data, null, 2));
+
+      return response.data;
+    })
+    .catch((error) => {
+      console.error(
+        "Error retrieving book by ISBN:",
+        error.response?.data || error.message
+      );
+      throw error;
+    });
+};
+
 module.exports.general = public_users;
 module.exports.getAllBooksAsync = getAllBooksAsync;
+module.exports.getBookByISBNAsync = getBookByISBNAsync;
