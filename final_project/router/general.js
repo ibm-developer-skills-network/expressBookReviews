@@ -144,6 +144,27 @@ const getBookByISBNAsync = (isbn) => {
     });
 };
 
+// Task 12: Get books by author using Axios and async/await
+const getBooksByAuthorAsync = async (author) => {
+  try {
+    const response = await axios.get(
+      `http://localhost:5000/author/${encodeURIComponent(author)}`
+    );
+
+    console.log("Books retrieved by author:");
+    console.log(JSON.stringify(response.data, null, 2));
+
+    return response.data;
+  } catch (error) {
+    console.error(
+      "Error retrieving books by author:",
+      error.response?.data || error.message
+    );
+    throw error;
+  }
+};
+
 module.exports.general = public_users;
 module.exports.getAllBooksAsync = getAllBooksAsync;
 module.exports.getBookByISBNAsync = getBookByISBNAsync;
+module.exports.getBooksByAuthorAsync = getBooksByAuthorAsync;
