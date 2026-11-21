@@ -58,12 +58,14 @@ public_users.get("/author/:author", async function (req, res) {
   let isBook;
 
   try {
-    for (const book in books) {
-      if (books[book].author.toLowerCase() === author.toLowerCase()) {
-        isBook = books[book];
+    isBook = await new Promise((resolve, _) => {
+      for (const book in books) {
+        if (books[book].author.toLowerCase() === author.toLowerCase()) {
+          resolve(books[book]);
+        }
       }
-    }
-    return res.status(300).json(isBook);
+    });
+    res.status(300).json(isBook);
   } catch (error) {
     res.status(500).json({ massage: "unable to get book by author" });
   }
