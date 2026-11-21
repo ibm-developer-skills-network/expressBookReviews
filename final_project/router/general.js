@@ -45,7 +45,9 @@ public_users.get("/isbn/:isbn", async function (req, res) {
         .status(404)
         .json({ message: `Book with ISBN:${isbn} not found` });
 
-    return res.status(300).json(books[isbn]);
+    const bookByISBN = await new Promise((resolve, _) => resolve(books[isbn]));
+
+    return res.status(300).json(bookByISBN);
   } catch (error) {
     res.status(500).json({ message: `Unable to retrive book with isbn` });
   }
