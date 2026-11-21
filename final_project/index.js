@@ -20,11 +20,10 @@ app.use(
 app.use("/customer/auth/*", function auth(req, res, next) {
   const token = req.session.token;
 
-  try {
-    if (!token) return res.status(401).json({ message: "unauthorized" });
-    const decode = jwt.verify(token, process.env.SECREAT);
+  if (!token) return res.status(401).json({ message: "unauthorized" });
 
-    req.user = decode;
+  try {
+    req.user = jwt.verify(token, "process.env.SECREAT");
     next();
   } catch (error) {
     res.status(403).json({ massage: "invalied or expired token" });
