@@ -128,6 +128,20 @@ public_users.get('/title/:title', function (req, res) {
   return res.status(404).json({ message: "No books found for the given title" });
 });
 
+// Task 13: get book details by title using async-await with Axios
+public_users.get('/async/title/:title', async function (req, res) {
+    const title = req.params.title;
+    try {
+      const response = await axios.get(`http://localhost:5000/title/${encodeURIComponent(title)}`);
+      return res.status(200).send(JSON.stringify(response.data, null, 4));
+    } catch (error) {
+      if (error.response && error.response.status === 404) {
+        return res.status(404).json({ message: "No books found for the given title" });
+      }
+      return res.status(500).json({ message: "Error fetching book details by title" });
+    }
+});
+
 //  Get book review
 public_users.get('/review/:isbn', function (req, res) {
   const isbn = req.params.isbn;
